@@ -1,0 +1,17 @@
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="small_padding">10dp</dimen>
+    <dimen name="normal_padding">20dp</dimen>
+    <dimen name="big_text_size">20sp</dimen>
+    <dimen name="layout_padding_top">80dp</dimen>
+    <dimen name="large_padding">100dp</dimen>
+    <dimen name="normal_text_size">15sp</dimen>
+    <dimen name="icon_width">60dp</dimen>
+    <dimen name="icon_height">60dp</dimen>
+    <dimen name="normal_round">20dp</dimen>
+    <dimen name="big_round">40dp</dimen>
+    
+</resources>

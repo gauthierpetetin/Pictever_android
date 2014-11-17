@@ -1,0 +1,21 @@
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/selected"
+    android:oneshot="true" >
+
+    <item
+        android:drawable="@drawable/little_billy_disco2"
+        android:duration="@integer/billy_lapse"/>
+    <item
+        android:drawable="@drawable/little_billy_disco"
+        android:duration="@integer/billy_lapse"/>
+    <item
+        android:drawable="@drawable/little_billy"
+        android:duration="@integer/billy_lapse"/>
+    <item
+        android:drawable="@drawable/little_billy_disco"
+        android:duration="@integer/billy_lapse"/>
+    <item
+        android:drawable="@drawable/little_billy_disco2"
+        android:duration="@integer/billy_lapse"/>
+
+</animation-list>

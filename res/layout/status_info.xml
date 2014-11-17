@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <ImageView
+        android:id="@+id/status_info_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:scaleType="fitXY"
+        android:src="@drawable/shyft_background2"
+        android:visibility="visible" />
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="50dp"
+        android:layout_marginTop="50dp"
+        android:text="Status Info"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/DarkCyan"
+        android:textSize="28sp" />
+
+    <TextView
+        android:id="@+id/email_adress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView1"
+        android:layout_centerHorizontal="true"
+        android:text="Your status depends on your Pictever counter : "
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/contacts_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/email_adress"
+        android:layout_alignParentLeft="false"
+        android:layout_below="@+id/email_adress"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="20dp"
+        android:text="- your counter increases when you send messages in the future"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/TextView02"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/email_adress"
+        android:layout_below="@+id/contacts_title"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="5dp"
+        android:text="- your counter decreases when these messages are received"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/block_another_shyfter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/email_adress"
+        android:layout_below="@+id/TextView02"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="30dp"
+        android:gravity="left"
+        android:text="Tip: the best way to increase your status is to send messages to many people
+         in the far-distant future ;)"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/OrangeKeo" />
+
+</RelativeLayout>

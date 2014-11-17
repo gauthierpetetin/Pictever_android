@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <integer name="button_capture_lapse">60</integer>
+    <integer name="button_facebook_lapse">1000</integer>
+    <integer name="billy_lapse">200</integer>
+
+</resources>

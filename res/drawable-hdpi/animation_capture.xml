@@ -1,0 +1,39 @@
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/selected"
+    android:oneshot="false" >
+
+    <item
+        android:drawable="@drawable/camera_button10"
+        android:duration="@integer/button_capture_lapse"/>
+    <item
+        android:drawable="@drawable/camera_button1"
+        android:duration="@integer/button_capture_lapse"/>
+    <item
+        android:drawable="@drawable/camera_button2"
+        android:duration="@integer/button_capture_lapse"/>
+    <item
+        android:drawable="@drawable/camera_button3"
+        android:duration="@integer/button_capture_lapse"/>
+    <item
+        android:drawable="@drawable/camera_button4"
+        android:duration="@integer/button_capture_lapse"/>
+    <item
+        android:drawable="@drawable/camera_button5"
+        android:duration="@integer/button_capture_lapse"/>
+    <item
+        android:drawable="@drawable/camera_button6"
+        android:duration="@integer/button_capture_lapse"/>
+    <item
+        android:drawable="@drawable/camera_button7"
+        android:duration="@integer/button_capture_lapse"/>
+    <item
+        android:drawable="@drawable/camera_button8"
+        android:duration="@integer/button_capture_lapse"/>
+    <item
+        android:drawable="@drawable/camera_button9"
+        android:duration="@integer/button_capture_lapse"/>
+    <item
+        android:drawable="@drawable/camera_button10"
+        android:duration="@integer/button_capture_lapse"/>
+
+</animation-list>
