@@ -286,16 +286,16 @@ public class AfterPictureTaken extends PicteverActivity {
 												Log.v(TAG,"bitmap created");
 												int size = bmp.getWidth()*bmp.getHeight() ;
 												int limit_size = 500000;
-//												if (size>limit_size) {
-//													int bmp_width = bmp.getWidth();
-//													int bmp_height = bmp.getHeight();
-//													bmp_width = (int) Math.round(
-//															bmp_width*Math.sqrt(limit_size)/Math.sqrt(size));
-//													bmp_height = (int) Math.round(
-//															(float)bmp_height*Math.sqrt(limit_size)/Math.sqrt(size));
-//													bmp = Bitmap.createScaledBitmap(bmp,bmp_width,bmp_height, false);
-//													Log.v(TAG,"bitmap resized");
-//												}
+												if (size>limit_size) {
+													int bmp_width = bmp.getWidth();
+													int bmp_height = bmp.getHeight();
+													bmp_width = (int) Math.round(
+															bmp_width*Math.sqrt(limit_size)/Math.sqrt(size));
+													bmp_height = (int) Math.round(
+															(float)bmp_height*Math.sqrt(limit_size)/Math.sqrt(size));
+													bmp = Bitmap.createScaledBitmap(bmp,bmp_width,bmp_height, false);
+													Log.v(TAG,"bitmap resized");
+												}
 												File imageFileFolder = new File(
 														Environment.getExternalStoragePublicDirectory(
 																Environment.DIRECTORY_PICTURES),"Pictever");
@@ -443,16 +443,16 @@ public class AfterPictureTaken extends PicteverActivity {
 										Log.v(TAG,"bitmap created");
 										int size = bmp.getWidth()*bmp.getHeight() ;
 										int limit_size = 500000;
-//										if (size>limit_size) {
-//											int bmp_width = bmp.getWidth();
-//											int bmp_height = bmp.getHeight();
-//											bmp_width = (int) Math.round(
-//													bmp_width*Math.sqrt(limit_size)/Math.sqrt(size));
-//											bmp_height = (int) Math.round(
-//													(float)bmp_height*Math.sqrt(limit_size)/Math.sqrt(size));
-//											bmp = Bitmap.createScaledBitmap(bmp,bmp_width,bmp_height, false);
-//											Log.v(TAG,"bitmap resized");
-//										}
+										if (size>limit_size) {
+											int bmp_width = bmp.getWidth();
+											int bmp_height = bmp.getHeight();
+											bmp_width = (int) Math.round(
+													bmp_width*Math.sqrt(limit_size)/Math.sqrt(size));
+											bmp_height = (int) Math.round(
+													(float)bmp_height*Math.sqrt(limit_size)/Math.sqrt(size));
+											bmp = Bitmap.createScaledBitmap(bmp,bmp_width,bmp_height, false);
+											Log.v(TAG,"bitmap resized");
+										}
 
 										File imageFileFolder = new File(Environment.getExternalStoragePublicDirectory(
 												Environment.DIRECTORY_PICTURES),"Pictever");

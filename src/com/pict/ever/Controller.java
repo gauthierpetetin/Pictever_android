@@ -136,6 +136,7 @@ public class Controller {
 	Toast iolos;
 	ProgressBar loader;
 	AlertDialog update_dialog;
+	String popup_extra;
 	TextView tvCounter;
 	LinearLayout ll_progress;
 	RelativeLayout.LayoutParams ll_progress_params;
@@ -276,7 +277,7 @@ public class Controller {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void defineNewPassword (String user_email, String verification_code, String new_password){
 		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(3);
 		nameValuePairs.add(new BasicNameValuePair("email",user_email));
@@ -332,6 +333,10 @@ public class Controller {
 	}
 
 	public String sendMessage (String message,String photo_id,String contact_ids,String send_choice){
+		editor = prefs.edit();
+		int messages_sent = prefs.getInt("messages_sent", 0);
+		editor.putInt("messages_sent", messages_sent+1);
+		editor.commit();
 		String no_network = "";
 		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(4);
 		nameValuePairs.add(new BasicNameValuePair("message",message));
@@ -409,7 +414,7 @@ public class Controller {
 			new asyn_get_request().execute(url);
 		}
 	}
-	
+
 	public void send_reset_mail(String email) {
 		String url = origin_url + "send_reset_mail?email=" + email;
 		ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -892,7 +897,7 @@ public class Controller {
 					break;
 				}
 			}
-			
+
 			if (url_code.equals("define_new_password")) { 
 				if (loader!=null) {
 					loader.clearAnimation();
@@ -970,7 +975,87 @@ public class Controller {
 				}.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,response);
 			}
 			if (err_code.equals("200") && url_code.equals("send")) {
-				Toast.makeText(context,"Message sent!",Toast.LENGTH_SHORT).show();
+				int messages_sent = prefs.getInt("messages_sent", 0);
+				Log.v(TAG,"messages_sent " +messages_sent);
+				int contacts_invited = prefs.getInt("contacts_invited", 0);
+				Log.v(TAG,"contacts_invited " + contacts_invited);
+				PicteverApp mPicteverApp = (PicteverApp) context.getApplicationContext();
+				if (mPicteverApp!=null && mPicteverApp.getCurrentActivity()!=null) {
+					String title="";
+					String message="";
+					popup_extra="";
+					switch (messages_sent) {
+					case 1:
+						title = "Congratulations! You sent your first message on Pictever!";
+						if (contacts_invited==0)
+							message= "Tip 1 : You can send messages to anybody in your address book!";
+						else 
+							message="Tip 1 : Wanna know how many messages wait for you in the future ?" +
+									" Go to your Timeline and ask Billy!";
+						break;
+					case 2:
+						title = "Your message has been sent successfully!";
+						if (contacts_invited==0) 
+							message= "Tip 2 : Wanna know how many messages wait for you in the future ?" +
+									" Go to your Timeline and ask Billy!";
+						else 
+							message="Tip 2 : You can give us your feedback on the app from the settings ;)";
+						break;
+					case 3:
+						title = "Your message has been sent successfully!";
+						message="Wanna help us ? Please leave a comment on Google Play ;)";
+						popup_extra ="review";
+						break;
+					case 4:
+						title = "Your message has been sent successfully!";
+						message="Tip 4 : You can resend the messages you received in your timeline," +
+								" so you can be surprised again!";
+						break;
+					case 5:
+						title = "Your message has been sent successfully!";
+						message="You are a master! Please join our community! (last popup you'll see we promise ;))";
+						popup_extra = "community";
+						break;
+					default:
+						Toast.makeText(context,"Message sent!",Toast.LENGTH_SHORT).show();
+						break;
+					}
+					if (!message.isEmpty()&&!title.isEmpty()) {
+						new AlertDialog.Builder(mPicteverApp.getCurrentActivity())
+						.setTitle(title)
+						.setMessage(message)
+						.setNeutralButton("Ok!", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) { 
+								if (popup_extra.equals("community")) {
+									Intent browserIntent = new Intent(Intent.ACTION_VIEW, 
+											Uri.parse("https://www.facebook.com/pictever"));
+									browserIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | 
+											Intent.FLAG_ACTIVITY_NEW_TASK);
+									context.startActivity(browserIntent);
+								}
+								if (popup_extra.equals("review")) {
+									final String appPackageName = context.getPackageName();
+									try {
+										Intent intent = new Intent(Intent.ACTION_VIEW, 
+												Uri.parse("market://details?id=" + appPackageName));
+										intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | 
+												Intent.FLAG_ACTIVITY_NEW_TASK);
+										context.startActivity(intent);
+									} catch (android.content.ActivityNotFoundException anfe) {
+										Intent intent = new Intent(Intent.ACTION_VIEW, 
+												Uri.parse("http://play.google.com/store/apps/details?id=" 
+														+ appPackageName));
+										intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | 
+												Intent.FLAG_ACTIVITY_NEW_TASK);
+										context.startActivity(intent);
+									}
+								}
+								dialog.dismiss();
+							}
+						})
+						.show();
+					}
+				}
 				get_my_status();
 			}
 			if (err_code.equals("200") && url_code.equals("resend")) {
@@ -1009,7 +1094,7 @@ public class Controller {
 			if (err_code.equals("500") || err_code.equals("503")) {
 				Toast.makeText(context,"Server Error. Please report to Pictever Team",Toast.LENGTH_SHORT).show();
 			}
-			
+
 			if (err_code.equals("200") && url_code.startsWith("send_reset_mail")) {
 				Intent intent = new Intent(context,ResetPassword.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -2043,11 +2128,12 @@ public class Controller {
 									sendMessage("",last_picture_name, 
 											last_contact_ids,last_send_choice);
 									for (String id : last_list_ids_selected) {
-										int times_contacted = prefs.getInt(id+"_times_contacted", 0);
 										editor = prefs.edit();
+										int times_contacted = prefs.getInt(id+"_times_contacted", 0);
 										editor.putInt(id+"_times_contacted", times_contacted+1);
-										editor.commit();
 										if (id.startsWith("num")){
+											int contacts_invited = prefs.getInt("contacts_invited", 0);
+											editor.putInt("contacts_invited", contacts_invited+1);
 											SmsManager smsManager = SmsManager.getDefault();
 											smsManager.sendTextMessage(id.substring(3), null, 
 													"I just sent you a message in the future on Pictever! " +
@@ -2055,6 +2141,7 @@ public class Controller {
 															"http://pictever.com",
 															null, null);
 										}
+										editor.commit();
 									}
 								}
 								upload = null;
