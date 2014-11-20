@@ -26,11 +26,11 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="35dp"
         android:text="Pictever"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/White"
-        android:textSize="80sp" />
+        android:textSize="90sp" />
 
     <Button
         android:id="@+id/button_welcome_sign_up"
@@ -39,13 +39,10 @@
         android:layout_above="@+id/button_welcome_login"
         android:layout_centerHorizontal="true"
         android:background="@color/DarkCyan"
-        android:fadingEdgeLength="25dp"
-        android:padding="5dp"
         android:text="SIGN UP"
         android:textColor="@color/White"
         android:textColorHint="@color/White"
         android:textSize="40sp"
-        android:textStyle="bold"
         android:visibility="visible" />
 
     <Button
@@ -55,11 +52,9 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:background="@color/DarkGreen"
-        android:padding="10dp"
         android:text="LOGIN"
         android:textColor="@color/White"
         android:textColorHint="@color/White"
-        android:textSize="20sp"
-        android:textStyle="bold" />
+        android:textSize="30sp"/>
 
 </RelativeLayout>

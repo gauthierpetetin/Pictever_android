@@ -107,6 +107,8 @@
             android:id="@+id/list_pick_contact"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:divider="@color/WhiteSmoke"
+            android:dividerHeight="0.5dp"
             android:layout_below="@+id/rl_title_popup"
             android:fastScrollEnabled="true"
             android:visibility="invisible" >
@@ -115,6 +117,8 @@
         <ListView
             android:id="@+id/listView_times"
             android:layout_width="match_parent"
+            android:divider="@color/WhiteSmoke"
+            android:dividerHeight="0.5dp"
             android:layout_height="match_parent"
             android:layout_below="@+id/rl_title_popup"
             android:visibility="invisible" >
@@ -126,6 +130,9 @@
             android:layout_height="wrap_content"
             android:layout_above="@+id/timePicker"
             android:layout_below="@+id/rl_title_popup"
+             android:focusedMonthDateColor="@color/WhiteSmoke"
+            android:showWeekNumber="false"
+            android:shownWeekCount="4"
             android:layout_centerHorizontal="true"
             android:layout_margin="5dp"
             android:visibility="invisible" /> 
@@ -146,6 +153,7 @@
             android:visibility="invisible" />
 
         <TimePicker
+            style="@style/MyHoloTimePicker"
             android:id="@+id/timePicker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

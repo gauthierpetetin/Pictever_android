@@ -13,7 +13,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.net.ConnectivityManager;
@@ -109,9 +111,9 @@ public class NewMessage extends PicteverActivity {
 			decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
 					| View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
 		}
-		
-//		RelativeLayout rl_newmessage = (RelativeLayout) findViewById(R.id.newmessage_relative_layout);
-//		rl_newmessage
+
+		//		RelativeLayout rl_newmessage = (RelativeLayout) findViewById(R.id.newmessage_relative_layout);
+		//		rl_newmessage
 
 		TextView txt = (TextView) findViewById(R.id.new_message_title);
 		font = Typeface.createFromAsset(getAssets(), "gabriola.ttf");
@@ -184,15 +186,15 @@ public class NewMessage extends PicteverActivity {
 		time_picker.setIs24HourView(true);
 		button_send_future = (ImageButton) findViewById(R.id.button_send_future);
 		background = (ImageView) findViewById(R.id.new_message_background);
-//		background.setOnTouchListener(new OnSwipeTouchListener(){
-//		    public void onSwipeLeft() {
-//				startActivity(new Intent(NewMessage.this,CameraActivity.class));
-//				NewMessage.this.overridePendingTransition(
-//						R.animator.animation_enter_on_right,R.animator.animation_leave_on_left);
-//				finish();
-//		    }
-//		});
-		
+		//		background.setOnTouchListener(new OnSwipeTouchListener(){
+		//		    public void onSwipeLeft() {
+		//				startActivity(new Intent(NewMessage.this,CameraActivity.class));
+		//				NewMessage.this.overridePendingTransition(
+		//						R.animator.animation_enter_on_right,R.animator.animation_leave_on_left);
+		//				finish();
+		//		    }
+		//		});
+
 		Calendar cal = Calendar.getInstance();
 		year = Integer.toString(cal.get(Calendar.YEAR));
 		month = Integer.toString(cal.get(Calendar.MONTH)+1);
@@ -206,7 +208,7 @@ public class NewMessage extends PicteverActivity {
 				controller.ll_progress_params = new RelativeLayout.LayoutParams(
 						Math.round((float) controller.uploadProgression/100*
 								controller.prefs.getInt("SCREEN_HEIGHT",0)),
-						Math.round((float) controller.prefs.getInt("SCREEN_WIDTH", 500)/100));
+								Math.round((float) controller.prefs.getInt("SCREEN_WIDTH", 500)/100));
 				if (controller.rl_title!=null)
 					controller.ll_progress_params.addRule(RelativeLayout.BELOW,controller.rl_title.getId());
 				controller.ll_progress.setLayoutParams(controller.ll_progress_params);
@@ -220,7 +222,7 @@ public class NewMessage extends PicteverActivity {
 				controller.ll_progress_params = new RelativeLayout.LayoutParams(
 						Math.round((float) controller.uploadProgression/100*
 								controller.prefs.getInt("SCREEN_HEIGHT",0)),
-						Math.round((float) controller.prefs.getInt("SCREEN_WIDTH", 500)/100));
+								Math.round((float) controller.prefs.getInt("SCREEN_WIDTH", 500)/100));
 				if (controller.rl_title!=null) {
 					controller.ll_progress_params.addRule(RelativeLayout.BELOW,controller.rl_title.getId());
 				}
@@ -302,16 +304,18 @@ public class NewMessage extends PicteverActivity {
 											controller.editor = controller.prefs.edit();
 											controller.editor.putInt(id_selected+"_times_contacted", 
 													times_contacted +1);
-											controller.editor.commit();
 											Log.v(TAG,id_selected + "_times_contacted : "
 													+ controller.prefs.getInt(id_selected+ "_times_contacted", 0));
 											if (id_selected.startsWith("num")){
+												int contacts_invited = controller.prefs.getInt("contacts_invited", 0);
+												controller.editor.putInt("contacts_invited", contacts_invited+1);
 												SmsManager smsManager = SmsManager.getDefault();
 												smsManager.sendTextMessage(id_selected.substring(3), null, 
 														"I just sent you a message in the future on Pictever!" +
-														" To get the app and see the message: http://pictever.com"
-														, null, null);
+																" To get the app and see the message: http://pictever.com"
+																, null, null);
 											}
+											controller.editor.commit();
 										}
 										finish();
 									}
@@ -343,7 +347,7 @@ public class NewMessage extends PicteverActivity {
 						listView_contacts.setVisibility(View.VISIBLE);	
 						button_send_future.setImageResource(R.drawable.next_cyan);
 						controller.sortSendChoices(controller.listSendChoices);
-						listView_times.setAdapter(new AdapterTimes(context, controller.listSendChoices));
+						listView_times.setAdapter(new AdapterTimes(context,controller,controller.listSendChoices));
 					}
 				}
 			}
@@ -388,67 +392,83 @@ public class NewMessage extends PicteverActivity {
 		listView_times.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {	
-
 				if (position!=0) {
 					try {
 						JSONObject json_send_choice = new JSONObject(controller.listSendChoices.get(position));
-						JSONObject json_send_choice_to_send = new JSONObject();
-						json_send_choice_to_send.put("type",json_send_choice.getString("key"));
-						controller.last_send_label = json_send_choice.getString("send_label");
-						String timezone = Integer.toString((int) TimeUnit.MILLISECONDS.toHours(
-								(long)TimeZone.getDefault().getRawOffset()));
-						json_send_choice_to_send.put("timezone",timezone);
-						send_choice = json_send_choice_to_send.toString();						
-					} catch (JSONException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					message = edit_message.getText().toString();
-					if (!list_ids_selected.isEmpty()) {
-						view.setBackgroundResource(R.color.MidnightBlue);
-						JSONArray json_receiver_ids = new JSONArray(list_ids_selected);
-						ConnectivityManager cm = (ConnectivityManager) context.getSystemService(
-								Context.CONNECTIVITY_SERVICE);
-						if (cm!=null && cm.getActiveNetworkInfo()!=null && cm.getActiveNetworkInfo().isConnected()) {
-							if(controller.analytics != null) {
-								AnalyticsEvent sendTextMessageEvent = 
-										controller.analytics.getEventClient().createEvent("androidTextMessageSent");
-								sendTextMessageEvent.addAttribute("number_of_receivers", 
-										Integer.toString(json_receiver_ids.length()));
-								sendTextMessageEvent.addAttribute("send_label",controller.last_send_label);
-								//Record the Level Complete event
-								controller.analytics.getEventClient().recordEvent(sendTextMessageEvent);
-								controller.analytics.getEventClient().submitEvents();
-							}
-							controller.sendMessage(message,"",json_receiver_ids.toString(),send_choice);
-							for (String id_selected : list_ids_selected) {
-								int times_contacted = controller.prefs.getInt(id_selected+"_times_contacted", 0);
-								controller.editor = controller.prefs.edit();
-								controller.editor.putInt(id_selected+"_times_contacted", times_contacted +1);
-								controller.editor.commit();
-								Log.v(TAG,id_selected + "_times_contacted : " + controller.prefs.getInt(
-										id_selected+ "_times_contacted", 0));
-								if (id_selected.startsWith("num")){
-									SmsManager smsManager = SmsManager.getDefault();
-									smsManager.sendTextMessage(id_selected.substring(3), null,
-											"I just sent you a message in the future on Pictever!" +
-											" To get the app and see the message : http://pictever.com", null, null);
+						if ((json_send_choice.getString("key").equals("53b95c02edb08c3d6885041f")
+								|| json_send_choice.getString("key").equals("53b95c02edb08c3d68850420")) &&
+								controller.prefs.getInt("contacts_invited",0) < 3) {
+							Log.v(TAG,"contacts invited" + controller.prefs.getInt("contacts_invited",0));
+							new AlertDialog.Builder(context)
+							.setTitle("Want to unlock this future time ?")
+							.setMessage("Just send a message to 3 friends that are not on Pictever ;)")
+							.setNeutralButton("Ok cool!", new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog, int which) {
+									dialog.dismiss();
 								}
-							}
-							rl_popup.setVisibility(View.INVISIBLE);
-							button_send_future.setVisibility(View.INVISIBLE);
-							listView_times.setVisibility(View.INVISIBLE);
-							listView_contacts.setVisibility(View.INVISIBLE);
-							finish();
+							})
+							.show();
 						}
 						else {
-							Toast.makeText(context,"No network right now. Please try again later",
-									Toast.LENGTH_SHORT).show();
-							view.setBackgroundResource(R.color.DarkCyan);
+							JSONObject json_send_choice_to_send = new JSONObject();
+							json_send_choice_to_send.put("type",json_send_choice.getString("key"));
+							controller.last_send_label = json_send_choice.getString("send_label");
+							String timezone = Integer.toString((int) TimeUnit.MILLISECONDS.toHours(
+									(long)TimeZone.getDefault().getRawOffset()));
+							json_send_choice_to_send.put("timezone",timezone);
+							send_choice = json_send_choice_to_send.toString();	
+							message = edit_message.getText().toString();
+							if (!list_ids_selected.isEmpty()) {
+								view.setBackgroundResource(R.color.MidnightBlue);
+								JSONArray json_receiver_ids = new JSONArray(list_ids_selected);
+								ConnectivityManager cm = (ConnectivityManager) context.getSystemService(
+										Context.CONNECTIVITY_SERVICE);
+								if (cm!=null && cm.getActiveNetworkInfo()!=null && cm.getActiveNetworkInfo().isConnected()) {
+									if(controller.analytics != null) {
+										AnalyticsEvent sendTextMessageEvent = 
+												controller.analytics.getEventClient().createEvent("androidTextMessageSent");
+										sendTextMessageEvent.addAttribute("number_of_receivers", 
+												Integer.toString(json_receiver_ids.length()));
+										sendTextMessageEvent.addAttribute("send_label",controller.last_send_label);
+										//Record the Level Complete event
+										controller.analytics.getEventClient().recordEvent(sendTextMessageEvent);
+										controller.analytics.getEventClient().submitEvents();
+									}
+									controller.sendMessage(message,"",json_receiver_ids.toString(),send_choice);
+									for (String id_selected : list_ids_selected) {
+										int times_contacted = controller.prefs.getInt(id_selected+"_times_contacted", 0);
+										controller.editor = controller.prefs.edit();
+										controller.editor.putInt(id_selected+"_times_contacted", times_contacted +1);
+										Log.v(TAG,id_selected + "_times_contacted : " + controller.prefs.getInt(
+												id_selected+ "_times_contacted", 0));
+										if (id_selected.startsWith("num")){
+											int contacts_invited = controller.prefs.getInt("contacts_invited", 0);
+											controller.editor.putInt("contacts_invited", contacts_invited+1);
+											SmsManager smsManager = SmsManager.getDefault();
+											smsManager.sendTextMessage(id_selected.substring(3), null,
+													"I just sent you a message in the future on Pictever!" +
+															" To get the app and see the message : http://pictever.com", null, null);
+										}
+										controller.editor.commit();
+									}
+									rl_popup.setVisibility(View.INVISIBLE);
+									button_send_future.setVisibility(View.INVISIBLE);
+									listView_times.setVisibility(View.INVISIBLE);
+									listView_contacts.setVisibility(View.INVISIBLE);
+									finish();
+								}
+								else {
+									Toast.makeText(context,"No network right now. Please try again later",
+											Toast.LENGTH_SHORT).show();
+									view.setBackgroundResource(R.color.DarkCyan);
+								}
+							}
+							else 
+								Toast.makeText(context,"Please select at least one contact ;)",Toast.LENGTH_SHORT).show();
 						}
+					} catch (JSONException e) {
+						e.printStackTrace();
 					}
-					else 
-						Toast.makeText(context,"Please select at least one contact ;)",Toast.LENGTH_SHORT).show();
 				}
 				else {
 					listView_times.setVisibility(View.INVISIBLE);
@@ -564,10 +584,10 @@ public class NewMessage extends PicteverActivity {
 		edit_message.addTextChangedListener(new TextWatcher() {
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
-					if (edit_message.getText().toString().isEmpty())
-						edit_message.setAlpha((float)0.5);
-					else
-						edit_message.setAlpha((float) 1);
+				if (edit_message.getText().toString().isEmpty())
+					edit_message.setAlpha((float)0.5);
+				else
+					edit_message.setAlpha((float) 1);
 			}
 			@Override
 			public void beforeTextChanged(CharSequence s, int start, int count,
@@ -577,7 +597,7 @@ public class NewMessage extends PicteverActivity {
 			public void afterTextChanged(Editable s) {
 			}
 		});
-		
+
 		edit_message.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {

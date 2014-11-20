@@ -2,8 +2,6 @@ package com.pict.ever;
 
 import java.util.List;
 
-import com.pict.ever.R;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Point;
@@ -48,14 +46,14 @@ public class WelcomeActivity extends Activity {
 		controller.SCREEN_WIDTH = size.y;
 		controller.SCREEN_HEIGHT = size.x;
 		controller.editor.commit();
-		
-		TextView tvPicteverTitle = (TextView) findViewById(R.id.tvPicteverTitle);
 		font = Typeface.createFromAsset(getAssets(), "gabriola.ttf");
-		tvPicteverTitle.setTypeface(font,Typeface.BOLD);
+		TextView tvPicteverTitle = (TextView) findViewById(R.id.tvPicteverTitle);
+		tvPicteverTitle.setTypeface(font,Typeface.NORMAL);
 
 		camera_sizes();
 
 		button_sign_up = (Button) findViewById(R.id.button_welcome_sign_up);
+		button_sign_up.setTypeface(font,Typeface.NORMAL);
 		button_sign_up.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -69,6 +67,7 @@ public class WelcomeActivity extends Activity {
 			}
 		});
 		button_login = (Button) findViewById(R.id.button_welcome_login);
+		button_login.setTypeface(font,Typeface.NORMAL);
 		button_login.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {

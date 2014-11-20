@@ -29,7 +29,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/DarkCyan" >
-        
+
         <TextView
             android:id="@+id/filkeo_title"
             android:layout_width="wrap_content"
@@ -62,8 +62,8 @@
             android:src="@drawable/settings_icon"
             android:visibility="visible" />
     </RelativeLayout>
-    
-   <LinearLayout
+
+    <LinearLayout
         android:id="@+id/ll_progress"
         android:layout_width="match_parent"
         android:layout_height="5dp"
@@ -71,12 +71,14 @@
         android:background="@color/OrangeKeo"
         android:orientation="horizontal" >
     </LinearLayout>
-     <EditText
+
+    <EditText
         android:id="@+id/edit_newmessage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="150dp"
+        android:alpha="0.5"
         android:background="@color/Transparent"
         android:cursorVisible="true"
         android:enabled="true"
@@ -87,7 +89,6 @@
         android:paddingLeft="15dp"
         android:paddingRight="15dp"
         android:paddingTop="5dp"
-        android:alpha="0.5"
         android:textColor="@color/DarkCyan"
         android:textColorHint="@color/DarkCyan"
         android:textCursorDrawable="@null"
@@ -96,7 +97,7 @@
         android:visibility="visible" >
 
         <requestFocus />
-    </EditText> 
+    </EditText>
 
     <RelativeLayout
         android:id="@+id/rl_popup"
@@ -129,6 +130,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/rl_title_popup"
+            android:divider="@color/WhiteSmoke"
+            android:dividerHeight="0.5dp"
             android:visibility="invisible" >
         </ListView>
 
@@ -137,6 +140,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/rl_title_popup"
+            android:divider="@color/WhiteSmoke"
+            android:dividerHeight="0.5dp"
             android:visibility="invisible" >
         </ListView>
 
@@ -148,6 +153,9 @@
             android:layout_below="@+id/rl_title_popup"
             android:layout_centerHorizontal="true"
             android:layout_margin="5dp"
+            android:focusedMonthDateColor="@color/WhiteSmoke"
+            android:showWeekNumber="false"
+            android:shownWeekCount="4"
             android:visibility="invisible" />
 
         <TextView
@@ -166,15 +174,17 @@
             android:visibility="invisible" />
 
         <TimePicker
-             android:id="@+id/timePicker"
+            style="@style/MyHoloTimePicker"
+            android:id="@+id/timePicker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:layout_margin="5dp"
             android:visibility="invisible" >
+
             <requestFocus />
-        </TimePicker> 
+        </TimePicker>
     </RelativeLayout>
 
     <RelativeLayout
@@ -202,8 +212,8 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:layout_margin="20dp"
-        android:visibility="invisible"
         android:background="@color/Transparent"
-        android:src="@drawable/abc_ic_voice_search_api_holo_light" />
+        android:src="@drawable/abc_ic_voice_search_api_holo_light"
+        android:visibility="invisible" />
 
 </RelativeLayout>

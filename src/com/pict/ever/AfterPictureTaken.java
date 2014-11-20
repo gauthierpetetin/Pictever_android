@@ -16,7 +16,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
@@ -359,7 +361,7 @@ public class AfterPictureTaken extends PicteverActivity {
 					listView_contacts.setVisibility(View.VISIBLE);	
 					button_send_future.setImageResource(R.drawable.next);
 					controller.sortSendChoices(controller.listSendChoices);
-					listView_times.setAdapter(new AdapterTimes(context, controller.listSendChoices));
+					listView_times.setAdapter(new AdapterTimes(context,controller,controller.listSendChoices));
 				}
 			}
 		});
@@ -402,94 +404,117 @@ public class AfterPictureTaken extends PicteverActivity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {	
 				if (position!=0) {
-					if (!list_ids_selected.isEmpty()) {
-						ConnectivityManager cm = (ConnectivityManager) context.getSystemService(
-								Context.CONNECTIVITY_SERVICE);
-						if (cm!=null && cm.getActiveNetworkInfo()!=null && cm.getActiveNetworkInfo().isConnected()) {
-							if (controller.upload_is_active == "no") {
-								Log.v(TAG, "upoload_not_active");
-								view.setBackgroundResource(R.color.MidnightBlue);
-								Log.v(TAG, "after midnight blue");
-								listView_times.setVisibility(View.INVISIBLE);
-								listView_contacts.setVisibility(View.INVISIBLE);
-								rl_popup.setVisibility(View.INVISIBLE);
-								button_cancel.setVisibility(View.INVISIBLE);
-								button_send_future.setVisibility(View.INVISIBLE);
-								button_color.setVisibility(View.INVISIBLE);
-								((TextView) findViewById(R.id.tapToAddaText)).setVisibility(View.INVISIBLE);
-								pos = position;
-								Handler handler = new Handler();
-								handler.postDelayed(new Runnable() {
-									public void run() {
-										try {
-											JSONObject json_send_choice = new JSONObject(
-													controller.listSendChoices.get(pos));
-											JSONObject json_send_choice_to_send = new JSONObject();
-											json_send_choice_to_send.put("type",json_send_choice.getString("key"));
-											controller.last_send_label = json_send_choice.getString("send_label");
-											String timezone = Integer.toString((int) TimeUnit.MILLISECONDS.toHours(
-													(long)TimeZone.getDefault().getRawOffset()));
-											json_send_choice_to_send.put("timezone",timezone);
-											send_choice = json_send_choice_to_send.toString();						
-										} catch (JSONException e) {
-											// TODO Auto-generated catch block
-											e.printStackTrace();
-										}
-										Log.v(TAG,"after send_choice");
-										View main_view = ((RelativeLayout) findViewById(R.id.display_relative_layout));
-										main_view.setDrawingCacheEnabled(true);
-										bmp = Bitmap.createBitmap(main_view.getDrawingCache());
-										main_view.setDrawingCacheEnabled(false);
-										Log.v(TAG,"bitmap created");
-										int size = bmp.getWidth()*bmp.getHeight() ;
-										int limit_size = 500000;
-										if (size>limit_size) {
-											int bmp_width = bmp.getWidth();
-											int bmp_height = bmp.getHeight();
-											bmp_width = (int) Math.round(
-													bmp_width*Math.sqrt(limit_size)/Math.sqrt(size));
-											bmp_height = (int) Math.round(
-													(float)bmp_height*Math.sqrt(limit_size)/Math.sqrt(size));
-											bmp = Bitmap.createScaledBitmap(bmp,bmp_width,bmp_height, false);
-											Log.v(TAG,"bitmap resized");
-										}
+					try {
+						JSONObject json_send_choice = new JSONObject(
+								controller.listSendChoices.get(position));
+						if ((json_send_choice.getString("key").equals("53b95c02edb08c3d6885041f")
+								|| json_send_choice.getString("key").equals("53b95c02edb08c3d68850420")) &&
+								controller.prefs.getInt("contacts_invited",0) < 3) {
+							Log.v(TAG,"contacts invited" + controller.prefs.getInt("contacts_invited",0));
+							new AlertDialog.Builder(context)
+							.setTitle("Want to unlock this future time ?")
+							.setMessage("Just send a message to 3 friends that are not on Pictever ;)")
+							.setNeutralButton("Ok cool!", new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog, int which) {
+									dialog.dismiss();
+								}
+							})
+							.show();
+						}
+						else {
+							if (!list_ids_selected.isEmpty()) {
+								ConnectivityManager cm = (ConnectivityManager) context.getSystemService(
+										Context.CONNECTIVITY_SERVICE);
+								if (cm!=null && cm.getActiveNetworkInfo()!=null && cm.getActiveNetworkInfo().isConnected()) {
+									if (controller.upload_is_active == "no") {
+										Log.v(TAG, "upoload_not_active");
+										view.setBackgroundResource(R.color.MidnightBlue);
+										Log.v(TAG, "after midnight blue");
+										listView_times.setVisibility(View.INVISIBLE);
+										listView_contacts.setVisibility(View.INVISIBLE);
+										rl_popup.setVisibility(View.INVISIBLE);
+										button_cancel.setVisibility(View.INVISIBLE);
+										button_send_future.setVisibility(View.INVISIBLE);
+										button_color.setVisibility(View.INVISIBLE);
+										((TextView) findViewById(R.id.tapToAddaText)).setVisibility(View.INVISIBLE);
+										pos = position;
+										Handler handler = new Handler();
+										handler.postDelayed(new Runnable() {
+											public void run() {
+												try{
+													JSONObject json_send_choice = new JSONObject(
+															controller.listSendChoices.get(pos));
+													JSONObject json_send_choice_to_send = new JSONObject();
+													json_send_choice_to_send.put("type",json_send_choice.getString("key"));
+													controller.last_send_label = json_send_choice.getString("send_label");
+													String timezone = Integer.toString((int) TimeUnit.MILLISECONDS.toHours(
+															(long)TimeZone.getDefault().getRawOffset()));
+													json_send_choice_to_send.put("timezone",timezone);
+													send_choice = json_send_choice_to_send.toString();	
+												} catch (JSONException e) {
+													// TODO Auto-generated catch block
+													e.printStackTrace();
+												}
+												Log.v(TAG,"after send_choice");
+												View main_view = ((RelativeLayout) findViewById(R.id.display_relative_layout));
+												main_view.setDrawingCacheEnabled(true);
+												bmp = Bitmap.createBitmap(main_view.getDrawingCache());
+												main_view.setDrawingCacheEnabled(false);
+												Log.v(TAG,"bitmap created");
+												int size = bmp.getWidth()*bmp.getHeight() ;
+												int limit_size = 500000;
+												if (size>limit_size) {
+													int bmp_width = bmp.getWidth();
+													int bmp_height = bmp.getHeight();
+													bmp_width = (int) Math.round(
+															bmp_width*Math.sqrt(limit_size)/Math.sqrt(size));
+													bmp_height = (int) Math.round(
+															(float)bmp_height*Math.sqrt(limit_size)/Math.sqrt(size));
+													bmp = Bitmap.createScaledBitmap(bmp,bmp_width,bmp_height, false);
+													Log.v(TAG,"bitmap resized");
+												}
 
-										File imageFileFolder = new File(Environment.getExternalStoragePublicDirectory(
-												Environment.DIRECTORY_PICTURES),"Pictever");
-										imageFileFolder.mkdir();
-										FileOutputStream out = null;
-										File imageFileName = new File(imageFileFolder, photo_path);
-										try {
-											out = new FileOutputStream(imageFileName);
-											bmp.compress(Bitmap.CompressFormat.JPEG, 100, out);
-											out.flush();
-											out.close();
-											out = null;
-										} catch (Exception e) {
-											e.printStackTrace();
-										}
-										Log.v(TAG,"bitmap stored");
-										JSONArray json_ids = new JSONArray(list_ids_selected);
-										contact_ids = json_ids.toString();
-										controller.last_photo_path = photo_path;
-										controller.last_contact_ids = contact_ids;
-										controller.last_send_choice = send_choice;
-										controller.last_list_ids_selected = list_ids_selected;
-										controller.upload_is_active = "yes";
-										finish();
+												File imageFileFolder = new File(Environment.getExternalStoragePublicDirectory(
+														Environment.DIRECTORY_PICTURES),"Pictever");
+												imageFileFolder.mkdir();
+												FileOutputStream out = null;
+												File imageFileName = new File(imageFileFolder, photo_path);
+												try {
+													out = new FileOutputStream(imageFileName);
+													bmp.compress(Bitmap.CompressFormat.JPEG, 100, out);
+													out.flush();
+													out.close();
+													out = null;
+												} catch (Exception e) {
+													e.printStackTrace();
+												}
+												Log.v(TAG,"bitmap stored");
+												JSONArray json_ids = new JSONArray(list_ids_selected);
+												contact_ids = json_ids.toString();
+												controller.last_photo_path = photo_path;
+												controller.last_contact_ids = contact_ids;
+												controller.last_send_choice = send_choice;
+												controller.last_list_ids_selected = list_ids_selected;
+												controller.upload_is_active = "yes";
+												finish();
+											}
+										}, 100);
 									}
-								}, 100);
+									else 
+										Toast.makeText(context,"Please wait for the previous picture to be sent.",
+												Toast.LENGTH_SHORT).show();
+								}
+								else
+									Toast.makeText(context,"Not enough network right now. Please try again later",
+											Toast.LENGTH_SHORT).show();
 							}
 							else 
-								Toast.makeText(context,"Please wait for the previous picture to be sent.",
-										Toast.LENGTH_SHORT).show();
+								Toast.makeText(context,"Please select at least one contact ;)",Toast.LENGTH_SHORT).show();
 						}
-						else
-							Toast.makeText(context,"Not enough network right now. Please try again later",
-									Toast.LENGTH_SHORT).show();
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
-					else 
-						Toast.makeText(context,"Please select at least one contact ;)",Toast.LENGTH_SHORT).show();
 				}
 				else {
 					tv_title_popup.setText("Choose from the calendar");
@@ -627,7 +652,7 @@ public class AfterPictureTaken extends PicteverActivity {
 					InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 					imm.showSoftInput(edit_message, InputMethodManager.SHOW_IMPLICIT);
 				}
-				
+
 				if (button_color.getVisibility()==View.VISIBLE) 
 					button_color.setVisibility(View.INVISIBLE);
 				else
@@ -718,7 +743,7 @@ public class AfterPictureTaken extends PicteverActivity {
 			}
 		});
 	}
-	
+
 	public void change_color() {
 		Log.v(TAG,"counter"+ mod(counter, 6));
 		switch (mod(counter,6)) {
@@ -751,12 +776,12 @@ public class AfterPictureTaken extends PicteverActivity {
 		controller.editor.putInt("color_counter",counter);
 		controller.editor.commit();
 	}
-	
+
 	private int mod(int x, int y) {
-	    int result = x % y;
-	    if (result < 0)
-	        result += y;
-	    return result;
+		int result = x % y;
+		if (result < 0)
+			result += y;
+		return result;
 	}
 }
 

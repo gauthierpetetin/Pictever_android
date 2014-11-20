@@ -976,7 +976,7 @@ public class Controller {
 			}
 			if (err_code.equals("200") && url_code.equals("send")) {
 				int messages_sent = prefs.getInt("messages_sent", 0);
-				Log.v(TAG,"messages_sent " +messages_sent);
+				Log.v(TAG,"messages_sent " + messages_sent);
 				int contacts_invited = prefs.getInt("contacts_invited", 0);
 				Log.v(TAG,"contacts_invited " + contacts_invited);
 				PicteverApp mPicteverApp = (PicteverApp) context.getApplicationContext();
@@ -1054,6 +1054,22 @@ public class Controller {
 							}
 						})
 						.show();
+						if (contacts_invited==3) {
+							if (prefs.getBoolean("show_unlock", true)) {
+								new AlertDialog.Builder(mPicteverApp.getCurrentActivity())
+								.setTitle("Awesome! You unlocked some future times!")
+								.setMessage("You can now send messages in 1 year and to a random day in the future!")
+								.setNeutralButton("Great!", new DialogInterface.OnClickListener() {
+									public void onClick(DialogInterface dialog, int which) { 
+										dialog.dismiss();
+									}
+								})
+								.show();
+								editor = prefs.edit();
+								editor.putBoolean("show_unlock",false);
+								editor.commit();
+							}
+						}
 					}
 				}
 				get_my_status();
@@ -2136,8 +2152,8 @@ public class Controller {
 											editor.putInt("contacts_invited", contacts_invited+1);
 											SmsManager smsManager = SmsManager.getDefault();
 											smsManager.sendTextMessage(id.substring(3), null, 
-													"I just sent you a message in the future on Pictever! " +
-															"To get the app and see the message: " +
+													"I just sent you a photo in the future on Pictever! " +
+															"To get the app and see it: " +
 															"http://pictever.com",
 															null, null);
 										}

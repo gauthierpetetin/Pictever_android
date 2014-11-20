@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.pict.ever"
-    android:versionCode="3"
+    android:versionCode="4"
     android:versionName="1.0" >
 
     <uses-sdk
@@ -111,13 +111,13 @@
             android:name="com.pict.ever.AfterPictureTaken"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" >
+            android:theme="@android:style/Theme.Holo.Light.NoActionBar.Fullscreen" >
         </activity>
         <activity
             android:name="com.pict.ever.NewMessage"
-            android:label="New Message"
+            android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen"
+            android:theme="@android:style/Theme.Holo.Light.NoActionBar.Fullscreen"
             android:windowSoftInputMode="adjustNothing" >
         </activity>
         <activity
