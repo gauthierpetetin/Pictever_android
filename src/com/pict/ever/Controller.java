@@ -105,7 +105,7 @@ public class Controller {
 	List<NameValuePair> nVP;
 	String update_link="",url_to_get_after_401="",
 			url_to_post_after_401="",origin_url,message_timestamp,photo_path;
-	String local_server="";
+	String local_server="http://192.168.1.11:5000/";
 	//---AMAZON---//
 	CognitoCachingCredentialsProvider cognitoProvider;
 	TransferManager transferManagerUp,transferManagerDown;
@@ -589,9 +589,9 @@ public class Controller {
 			iolos.setText("No network right now. Please try again later");
 			iolos.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
 			iolos.show();
-			btn_login.setEnabled(true);
-			btn_login.setAlpha(1);
-			if (loader!=null) {
+			if (loader!=null && btn_login!=null) {
+				btn_login.setEnabled(true);
+				btn_login.setAlpha(1);
 				loader.clearAnimation();
 				loader.setVisibility(View.INVISIBLE);
 			}
@@ -602,7 +602,11 @@ public class Controller {
 		@Override
 		protected String doInBackground(String... datas) {
 			InputStream inputStream = null;
+			String from = datas[0];
 			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(4);
+			nameValuePairs.add(new BasicNameValuePair("facebook_id",prefs.getString("facebook_id", "")));
+			nameValuePairs.add(new BasicNameValuePair("facebook_name",prefs.getString("facebook_name", "")));
+			nameValuePairs.add(new BasicNameValuePair("facebook_birthday",prefs.getString("facebook_birthday", "")));
 			nameValuePairs.add(new BasicNameValuePair("email",prefs.getString("user_email", "")));
 			nameValuePairs.add(new BasicNameValuePair("password",prefs.getString("user_password", "")));
 			nameValuePairs.add(new BasicNameValuePair("os","android"));
@@ -666,7 +670,7 @@ public class Controller {
 				else 
 					json_response.put("response_from_login","");
 				json_response.put("url",url);
-				json_response.put("from", datas[0]);
+				json_response.put("from", from);
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
@@ -950,11 +954,14 @@ public class Controller {
 							JSONArray json_array = new JSONArray(response[0]);
 							for (int i = 0; i < json_array.length(); i++) {
 								JSONObject json_object = json_array.getJSONObject(i);
-								String email = json_object.getString("email");
-								String user_id = json_object.getString("user_id");
-								String phoneNumber1 = json_object.getString("phoneNumber1");
-								String status = json_object.getString("status");
-								putInfosInContact(email,user_id,phoneNumber1,status);
+								String email = json_object.optString("email");
+								String user_id = json_object.optString("user_id");
+								String phoneNumber1 = json_object.optString("phoneNumber1");
+								String status = json_object.optString("status");
+								String facebook_id = json_object.optString("facebook_id");
+								String facebook_name = json_object.optString("facebook_name");
+								String facebook_birthday = json_object.optString("facebook_birthday");
+								putInfosInContact(email,user_id,phoneNumber1,status,facebook_id,facebook_name,facebook_birthday);
 							}
 							editor = prefs.edit();
 							Set<String> setContacts = new HashSet<String>(newlistContacts);
@@ -1007,11 +1014,6 @@ public class Controller {
 						popup_extra ="review";
 						break;
 					case 4:
-						title = "Your message has been sent successfully!";
-						message="Tip 4 : You can resend the messages you received in your timeline," +
-								" so you can be surprised again!";
-						break;
-					case 5:
 						title = "Your message has been sent successfully!";
 						message="You are a master! Please join our community! (last popup you'll see we promise ;))";
 						popup_extra = "community";
@@ -1136,7 +1138,6 @@ public class Controller {
 						sortedlistContacts.set(Integer.parseInt(contact[1]),contact[0]);
 					}
 				} catch (JSONException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				editor = prefs.edit();
@@ -1175,17 +1176,27 @@ public class Controller {
 							if (contact[0].isEmpty()) {
 								JSONObject jsoncontact = new JSONObject();
 								try {
-									String name= message.optString("from_numero");
-									if (message.optString("from_email").length() > 5) {
-										name = name + " (" + message.optString("from_email").substring(0,5) + "...)";
-									}
+									String name=message.optString("from_numero");
+									String facebook_id= message.optString("from_facebook_id");
+									String facebook_name= message.optString("from_facebook_name");
+									String facebook_birthday= message.optString("from_facebook_birthday");
+									if (!facebook_name.isEmpty())
+										name = facebook_name;
 									else {
-										name = name + " (" + message.optString("from_email") + " )";
+										if (message.optString("from_email").length() > 5) {
+											name = name + " (" + message.optString("from_email").substring(0,5) + "...)";
+										}
+										else {
+											name = name + " (" + message.optString("from_email") + " )";
+										}
 									}
 									jsoncontact.put("name",name);
 									jsoncontact.put("phoneNumber1", message.optString("from_numero"));
 									jsoncontact.put("phoneNumber2", "");
 									jsoncontact.put("uri_photo", "");
+									jsoncontact.put("facebook_id",facebook_id);
+									jsoncontact.put("facebook_name",facebook_name);
+									jsoncontact.put("facebook_birthday",facebook_birthday);
 									jsoncontact.put("status","");
 									jsoncontact.put("contact_id", "id"+message.optString("from_id"));
 									jsoncontact.put("is_selected","unselected");
@@ -1417,7 +1428,8 @@ public class Controller {
 		}
 	}
 
-	public void putInfosInContact(String mail, String user_ID, String phone1, String status) {
+	public void putInfosInContact(String mail, String user_ID, String phone1, String status,
+			String facebook_id, String facebook_name,String facebook_birthday) {
 		for (int i = 0; i < newlistContacts.size(); i++) {
 			String c = newlistContacts.get(i);
 			try {
@@ -1425,12 +1437,14 @@ public class Controller {
 				if (json_contact.get("phoneNumber1").equals(phone1) 
 						|| json_contact.get("phoneNumber2").equals(phone1)) {
 					json_contact.put("contact_id", "id"+user_ID);
+					json_contact.put("facebook_id",facebook_id);
+					json_contact.put("facebook_name",facebook_name);
+					json_contact.put("facebook_birthday",facebook_birthday);
 					json_contact.put("email",mail);
 					json_contact.put("status",status);
 				}
 				newlistContacts.set(i,json_contact.toString());
 			} catch (JSONException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -1605,40 +1619,6 @@ public class Controller {
 		return response;
 	}
 
-	public String[] findContactFromId(ArrayList<String> listContacts2,String id_to_search) throws JSONException {
-		String[] response = new String[2];
-		response[0] = "";
-		response[1] = "";
-		int i=0;
-		for (String icontact : listContacts2) {
-			JSONObject iJSONcontact = new JSONObject(icontact);
-			if (iJSONcontact.get("contact_id").equals(id_to_search)) {
-				response[0] = iJSONcontact.toString();
-				response[1] = Integer.toString(i);
-				return response;
-			}
-			i=i+1;
-		}
-		return response;
-	}
-
-	public String[] findContactFromName(ArrayList<String> listContacts2,String name_to_search) throws JSONException {
-		String[] response = new String[2];
-		response[0] = "";
-		response[1] = "";
-		int i=0;
-		for (String icontact : listContacts2) {
-			JSONObject iJSONcontact = new JSONObject(icontact);
-			if (iJSONcontact.optString("name").equals(name_to_search)) {
-				response[0] = iJSONcontact.toString();
-				response[1] = Integer.toString(i);
-				return response;
-			}
-			i=i+1;
-		}
-		return response;
-	}
-
 	private String extractPhonesfromListContacts(ArrayList<String> list_contacts) {
 		ArrayList<String> listPhones = new ArrayList<String>(); 
 		for (String c : list_contacts) {
@@ -1662,6 +1642,7 @@ public class Controller {
 	public String formatPhone (String phone) {
 		phone = phone.replaceAll(" ", "");
 		phone = phone.replaceAll("-", "");
+		phone = phone.replaceAll("/","");
 		if (phone.length() > 2) {
 			if (!phone.startsWith("00")) {
 				if (phone.startsWith("+")) {

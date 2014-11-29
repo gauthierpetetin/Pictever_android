@@ -13,8 +13,7 @@
         -->
     </style>
 
-    <style name="MyHoloTimePicker" parent="@android:style/Theme.Holo.Light.NoActionBar.Fullscreen">
-    </style>
+    <style name="MyHoloTimePicker" parent="@android:style/Theme.Holo.Light.NoActionBar.Fullscreen"></style>
 
     <!-- Application theme. -->
     <style name="AppTheme" parent="AppBaseTheme">

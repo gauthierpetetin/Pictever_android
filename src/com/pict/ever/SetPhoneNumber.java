@@ -31,12 +31,11 @@ import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.pict.ever.R;
 
 public class SetPhoneNumber extends Activity {
 
 	Controller controller;
-	String user_phone = "";
+	String user_phone = "";;
 	String TAG = "PhoneNumber";
 	ListView listview_country_codes;
 	Typeface font;
@@ -51,7 +50,6 @@ public class SetPhoneNumber extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
 		controller = ((PicteverApp) getApplication()).getController();
 		controller.current_activity = getClass().getSimpleName();
 
@@ -70,10 +68,7 @@ public class SetPhoneNumber extends Activity {
 					| View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
 		}
 
-		TextView txt = (TextView) findViewById(R.id.filkeo_title);
 		font = Typeface.createFromAsset(getAssets(), "gabriola.ttf");
-		txt.setTextSize(32);
-		txt.setTypeface(font,Typeface.BOLD);
 		TextView txt2 = (TextView) findViewById(R.id.phone_number_title);
 		txt2.setTextSize(30);
 		txt2.setTypeface(font);
@@ -208,12 +203,17 @@ public class SetPhoneNumber extends Activity {
 			public void afterTextChanged(Editable s) {
 			}
 		});
-
 		if (checkPlayServices()) {
 			gcm = GoogleCloudMessaging.getInstance(this);
 			reg_id = controller.prefs.getString("reg_id", "");
 			if (reg_id.isEmpty()) {
 				registerInBackground();
+			}
+			else {
+				if (controller.prefs.getString("facebook_id", "").isEmpty()) 
+					controller.login("");
+				else
+					controller.login("from_facebook");
 			}
 		} else {
 			Log.i(TAG,"No valid Google Play Services APK found.");
@@ -286,7 +286,6 @@ public class SetPhoneNumber extends Activity {
 					}
 					reg_id = gcm.register(controller.SENDER_ID);
 					msg = "Device registered, registration ID=" + reg_id;
-
 				} catch (IOException ex) {
 					msg = "Error :" + ex.getMessage();
 				}
@@ -298,7 +297,10 @@ public class SetPhoneNumber extends Activity {
 				controller.editor = controller.prefs.edit();
 				controller.editor.putString("reg_id", reg_id);
 				controller.editor.commit();
-				controller.login("");
+				if (controller.prefs.getString("facebook_id", "").isEmpty()) 
+					controller.login("");
+				else
+					controller.login("from_facebook");
 			}
 		}.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,"");
 	}

@@ -3,6 +3,8 @@ package com.pict.ever;
 import android.app.Activity;
 import android.os.Bundle;
 
+import com.facebook.AppEventsLogger;
+
 public class PicteverActivity extends Activity {
     protected PicteverApp mPicteverApp;
 
@@ -12,10 +14,12 @@ public class PicteverActivity extends Activity {
     }
     protected void onResume() {
         super.onResume();
+        AppEventsLogger.activateApp(this);
         mPicteverApp.setCurrentActivity(this);
     }
     protected void onPause() {
         clearReferences();
+        AppEventsLogger.deactivateApp(this);
         super.onPause();
     }
     protected void onDestroy() {        

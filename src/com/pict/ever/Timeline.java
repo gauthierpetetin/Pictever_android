@@ -51,7 +51,6 @@ import com.facebook.widget.FacebookDialog;
 public class Timeline extends PicteverActivity {
 
 	public static final String TAG = "Timeline";
-
 	String[] message,receive_label,contact_name,uri_icon,photo_id,created_at,received_date,receive_color;
 	ImageView ivPicture, fullscreen;
 	Controller controller;
@@ -487,9 +486,6 @@ public class Timeline extends PicteverActivity {
 										controller.photo_path = photo_id[(int)Math.floor(j)];
 										controller.is_retry_download = true;
 										controller.downloadCloudFront();
-										Toast.makeText(context,"Downloading image..." +
-												"Please refresh in a few seconds to see it",
-												Toast.LENGTH_LONG).show();
 									}
 									else {
 										Toast.makeText(context,"There is not enough network right now. " +

@@ -1,8 +1,8 @@
 package com.pict.ever;
 
+import java.util.Arrays;
 import java.util.List;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Point;
 import android.graphics.Typeface;
@@ -10,6 +10,7 @@ import android.hardware.Camera;
 import android.hardware.Camera.Size;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
@@ -17,13 +18,97 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
-public class WelcomeActivity extends Activity {
+import com.facebook.Request;
+import com.facebook.Request.GraphUserCallback;
+import com.facebook.Response;
+import com.facebook.Session;
+import com.facebook.SessionState;
+import com.facebook.UiLifecycleHelper;
+import com.facebook.model.GraphUser;
+import com.facebook.widget.LoginButton;
+
+public class WelcomeActivity extends PicteverActivity {
 
 	Button button_sign_up, button_login;
+	LoginButton button_fb;
 	Controller controller;
 	public static final String TAG = "WelcomeActivity";
 	Typeface font;
+	private UiLifecycleHelper uiHelper;
+	private Session.StatusCallback callback = new Session.StatusCallback() {
+		@Override
+		public void call(Session session, SessionState state, Exception exception) {
+			onSessionStateChange(session, state, exception);
+		}
+	};
+	private class meCallback implements GraphUserCallback {
+		@Override
+		public void onCompleted(GraphUser user, Response response) {
+			if (response.getError()==null) {
+				String name = user.getName();
+				controller.editor=controller.prefs.edit();
+				controller.editor.putString("facebook_id",user.getId());
+				controller.editor.putString("facebook_birthday",user.getBirthday());
+				if (!name.isEmpty())
+					controller.editor.putString("facebook_name",name);
+
+				if (user.getProperty("email")!=null)
+					controller.editor.putString("user_email",user.getProperty("email").toString());
+				controller.editor.commit();
+				Intent intent = new Intent(WelcomeActivity.this, SetPhoneNumber.class);
+				startActivity(intent);
+				finish();
+			}
+			else {
+				Toast.makeText(WelcomeActivity.this,"Facebook server has encountered an error",Toast.LENGTH_SHORT).show();
+				((LoginButton) findViewById(R.id.authButton)).setVisibility(View.VISIBLE);
+				((Button) findViewById(R.id.button_welcome_sign_up)).setVisibility(View.VISIBLE);
+				((Button) findViewById(R.id.button_welcome_login)).setVisibility(View.VISIBLE);
+			}
+		}       
+	}
+
+	private void onSessionStateChange(Session session, SessionState state, Exception exception) {
+		if (state.isOpened()) {
+			Log.i(TAG, "Logged in...");
+			Request.newMeRequest(session,new meCallback()).executeAsync();
+		} else if (state.isClosed()) {
+			Log.i(TAG, "Logged out...");
+		}
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		uiHelper.onResume();
+	}
+
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		uiHelper.onActivityResult(requestCode, resultCode, data);
+	}
+
+
+	@Override
+	public void onPause() {
+		super.onPause();
+		uiHelper.onPause();
+	}
+
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		uiHelper.onDestroy();
+	}
+
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		uiHelper.onSaveInstanceState(outState);
+	}
 
 
 	@Override
@@ -34,6 +119,8 @@ public class WelcomeActivity extends Activity {
 		controller = ((PicteverApp) getApplication()).getController();
 		controller.current_activity = getClass().getSimpleName();
 		controller.api = android.os.Build.VERSION.SDK_INT;
+		uiHelper = new UiLifecycleHelper(WelcomeActivity.this, callback);
+		uiHelper.onCreate(savedInstanceState);
 
 		Display display = getWindowManager().getDefaultDisplay();
 		Point size = new Point();
@@ -46,11 +133,39 @@ public class WelcomeActivity extends Activity {
 		controller.SCREEN_WIDTH = size.y;
 		controller.SCREEN_HEIGHT = size.x;
 		controller.editor.commit();
-		font = Typeface.createFromAsset(getAssets(), "gabriola.ttf");
+		font = Typeface.createFromAsset(getAssets(), "robotomedium.ttf");
 		TextView tvPicteverTitle = (TextView) findViewById(R.id.tvPicteverTitle);
 		tvPicteverTitle.setTypeface(font,Typeface.NORMAL);
 
 		camera_sizes();
+		
+		if (!controller.prefs.getString("facebook_id", "").isEmpty()) {
+			((LoginButton) findViewById(R.id.authButton)).setVisibility(View.INVISIBLE);
+			((Button) findViewById(R.id.button_welcome_sign_up)).setVisibility(View.INVISIBLE);
+			((Button) findViewById(R.id.button_welcome_login)).setVisibility(View.INVISIBLE);
+		}
+
+		button_fb = (LoginButton) findViewById(R.id.authButton);
+		button_fb.setReadPermissions(Arrays.asList("public_profile", "email"));
+		button_fb.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				(new Handler()).postDelayed(new Runnable() {
+					@Override
+					public void run() {
+						((LoginButton) findViewById(R.id.authButton)).setVisibility(View.INVISIBLE);
+						((Button) findViewById(R.id.button_welcome_sign_up)).setVisibility(View.INVISIBLE);
+						((Button) findViewById(R.id.button_welcome_login)).setVisibility(View.INVISIBLE);
+					}
+				}, 300);
+				Session session = Session.getActiveSession();
+				if (session != null &&
+						(session.isOpened() || session.isClosed()) ) {
+					onSessionStateChange(session, session.getState(), null);
+				}
+				uiHelper.onResume();
+			}
+		});
 
 		button_sign_up = (Button) findViewById(R.id.button_welcome_sign_up);
 		button_sign_up.setTypeface(font,Typeface.NORMAL);
@@ -117,7 +232,7 @@ public class WelcomeActivity extends Activity {
 						}
 						if (preview_size!=null) {
 							Log.v(TAG,facing +"_preview_optisize" + " stored = " 
-						+ Integer.toString(preview_size.width) + " x "+ 
+									+ Integer.toString(preview_size.width) + " x "+ 
 									Integer.toString(preview_size.height) +  " : " + 
 									Double.toString((double) preview_size.width / preview_size.height));
 
@@ -153,7 +268,7 @@ public class WelcomeActivity extends Activity {
 							}
 							if (picture_size!=null) {
 								Log.v(TAG, facing +"_picture_optisize"+ " stored = " 
-							+ Integer.toString(picture_size.width) + " x "+ 
+										+ Integer.toString(picture_size.width) + " x "+ 
 										Integer.toString(picture_size.height) +  " : " + 
 										Double.toString((double) picture_size.width/picture_size.height));
 
@@ -164,7 +279,7 @@ public class WelcomeActivity extends Activity {
 								int display_height = (int) Math.round((double) picture_size.height*display_ratio);
 
 								Log.v(TAG,facing +"_display" + " stored = " 
-								+ Integer.toString(display_width) + " x "+ 
+										+ Integer.toString(display_width) + " x "+ 
 										Integer.toString(display_height) +  " : " + 
 										Double.toString((double) display_width / display_height));
 								controller.editor = controller.prefs.edit();

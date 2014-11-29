@@ -5,7 +5,7 @@
 
     <ImageView
         android:id="@+id/imageView1"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:adjustViewBounds="true"
         android:baselineAlignBottom="false"
@@ -18,7 +18,7 @@
         android:longClickable="false"
         android:scaleType="centerCrop"
         android:scrollbarAlwaysDrawVerticalTrack="false"
-        android:src="@drawable/fond_spirale" />
+        android:src="@drawable/testcrop" />
 
     <TextView
         android:id="@+id/tvPicteverTitle"
@@ -30,31 +30,52 @@
         android:text="Pictever"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/White"
-        android:textSize="90sp" />
+        android:textSize="80sp" />
 
-    <Button
-        android:id="@+id/button_welcome_sign_up"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/button_welcome_login"
-        android:layout_centerHorizontal="true"
-        android:background="@color/DarkCyan"
-        android:text="SIGN UP"
-        android:textColor="@color/White"
-        android:textColorHint="@color/White"
-        android:textSize="40sp"
-        android:visibility="visible" />
-
-    <Button
-        android:id="@+id/button_welcome_login"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:background="@color/DarkGreen"
-        android:text="LOGIN"
-        android:textColor="@color/White"
-        android:textColorHint="@color/White"
-        android:textSize="30sp"/>
+        android:orientation="vertical" >
+
+        <com.facebook.widget.LoginButton
+            xmlns:fb="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/authButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="20dp"
+            android:scaleType="centerInside"
+            fb:login_text="Connect with Facebook"
+            fb:logout_text="Log out" />
+
+        <Button
+            android:id="@+id/button_welcome_sign_up"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/Gray"
+            android:padding="5dp"
+            android:text="Register with email"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:textColor="@color/White"
+            android:textColorHint="@color/White"
+            android:textSize="17sp"
+            android:visibility="visible" />
+
+        <Button
+            android:id="@+id/button_welcome_login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="20dp"
+            android:padding="5dp"
+            android:background="@color/black_overlay"
+            android:text="Log In"
+            android:textColor="@color/White"
+            android:textColorHint="@color/White"
+            android:textSize="17sp" />
+    </LinearLayout>
 
 </RelativeLayout>

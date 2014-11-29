@@ -32,16 +32,15 @@ public class Load extends PicteverActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
 		controller = ((PicteverApp) getApplication()).getController();
 		controller.current_activity = getClass().getSimpleName();
-
 		controller.api = android.os.Build.VERSION.SDK_INT;
 		controller.editor = controller.prefs.edit();
 		controller.editor.putInt("api_level", controller.api);
 		controller.editor.commit();
 		Log.v(TAG,Integer.toString(controller.api));
 		font = Typeface.createFromAsset(getAssets(), "gabriola.ttf");
+		
 		// IF THIS IS THE FIRST TIME ON THE APP
 		if (controller.prefs.getString("is_connected", "").isEmpty()) {
 			startActivity(new Intent(Load.this,WelcomeActivity.class));
