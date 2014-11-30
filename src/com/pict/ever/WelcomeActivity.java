@@ -35,7 +35,7 @@ public class WelcomeActivity extends PicteverActivity {
 	LoginButton button_fb;
 	Controller controller;
 	public static final String TAG = "WelcomeActivity";
-	Typeface font;
+	Typeface font1;
 	private UiLifecycleHelper uiHelper;
 	private Session.StatusCallback callback = new Session.StatusCallback() {
 		@Override
@@ -53,7 +53,6 @@ public class WelcomeActivity extends PicteverActivity {
 				controller.editor.putString("facebook_birthday",user.getBirthday());
 				if (!name.isEmpty())
 					controller.editor.putString("facebook_name",name);
-
 				if (user.getProperty("email")!=null)
 					controller.editor.putString("user_email",user.getProperty("email").toString());
 				controller.editor.commit();
@@ -133,10 +132,12 @@ public class WelcomeActivity extends PicteverActivity {
 		controller.SCREEN_WIDTH = size.y;
 		controller.SCREEN_HEIGHT = size.x;
 		controller.editor.commit();
-		font = Typeface.createFromAsset(getAssets(), "robotomedium.ttf");
+		font1 = Typeface.createFromAsset(getAssets(), "robotomedium.ttf");
+		Typeface font2 = Typeface.createFromAsset(getAssets(), "gabriola.ttf");
 		TextView tvPicteverTitle = (TextView) findViewById(R.id.tvPicteverTitle);
-		tvPicteverTitle.setTypeface(font,Typeface.NORMAL);
-
+		tvPicteverTitle.setTypeface(font2,Typeface.NORMAL);
+		TextView tvRemember = (TextView) findViewById(R.id.tvRemember);
+		tvRemember.setTypeface(font2,Typeface.NORMAL);
 		camera_sizes();
 		
 		if (!controller.prefs.getString("facebook_id", "").isEmpty()) {
@@ -168,7 +169,7 @@ public class WelcomeActivity extends PicteverActivity {
 		});
 
 		button_sign_up = (Button) findViewById(R.id.button_welcome_sign_up);
-		button_sign_up.setTypeface(font,Typeface.NORMAL);
+		button_sign_up.setTypeface(font1,Typeface.NORMAL);
 		button_sign_up.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -182,7 +183,7 @@ public class WelcomeActivity extends PicteverActivity {
 			}
 		});
 		button_login = (Button) findViewById(R.id.button_welcome_login);
-		button_login.setTypeface(font,Typeface.NORMAL);
+		button_login.setTypeface(font1,Typeface.NORMAL);
 		button_login.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {

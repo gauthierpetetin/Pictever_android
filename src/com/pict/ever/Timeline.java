@@ -151,12 +151,9 @@ public class Timeline extends PicteverActivity {
 		});
 	    swipeLayout.setColorSchemeResources(R.color.OrangeKeo,R.color.Red,R.color.Goldenrod,R.color.Orange);
 		controller.rl_title = (RelativeLayout) findViewById(R.id.rl_title);
-		TextView txt = (TextView) findViewById(R.id.filkeo_title);
 		TextView txt2 = (TextView) findViewById(R.id.tvWannaKnow);
 		TextView quick = (TextView) findViewById(R.id.quick);
 		font = Typeface.createFromAsset(getAssets(), "gabriola.ttf");
-		txt.setTextSize(30);
-		txt.setTypeface(font,Typeface.BOLD);
 		txt2.setTextSize(24);
 		txt2.setTypeface(font,Typeface.NORMAL);
 		quick.setTextSize(24);
@@ -164,12 +161,6 @@ public class Timeline extends PicteverActivity {
 		TextView timeline_title = (TextView) findViewById(R.id.timeline_title);
 		timeline_title.setTextSize(30);
 		timeline_title.setTypeface(font);
-		txt.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				onBackPressed();
-			}
-		});
 		display();
 	}
 

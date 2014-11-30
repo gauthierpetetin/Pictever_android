@@ -13,6 +13,11 @@
         -->
     </style>
 
+    <style name="dialog_animation">
+        <item name="android:windowEnterAnimation">@animator/animation_enter_on_left</item>
+        <item name="android:windowExitAnimation">@animator/animation_leave_on_right</item>
+    </style>
+
     <style name="MyHoloTimePicker" parent="@android:style/Theme.Holo.Light.NoActionBar.Fullscreen"></style>
 
     <!-- Application theme. -->

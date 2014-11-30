@@ -55,10 +55,7 @@ public class ResetPassword extends Activity {
 					| View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
 		}
 
-		TextView txt = (TextView) findViewById(R.id.filkeo_title);
 		font = Typeface.createFromAsset(getAssets(), "gabriola.ttf");
-		txt.setTextSize(32);
-		txt.setTypeface(font,Typeface.BOLD);
 		TextView txt2 = (TextView) findViewById(R.id.reset_title);
 		txt2.setTextSize(30);
 		txt2.setTypeface(font);

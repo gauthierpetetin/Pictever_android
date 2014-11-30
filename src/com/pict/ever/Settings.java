@@ -51,9 +51,6 @@ public class Settings extends PicteverActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		TextView tvShyft= (TextView) findViewById(R.id.tvShyft);
-		tvShyft.setTextSize(30);
-		tvShyft.setTypeface(font,Typeface.BOLD);
 		TextView settings_title = (TextView) findViewById(R.id.settings_title);
 		settings_title.setTextSize(30);
 		settings_title.setTypeface(font);

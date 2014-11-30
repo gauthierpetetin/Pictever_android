@@ -105,7 +105,7 @@ public class Controller {
 	List<NameValuePair> nVP;
 	String update_link="",url_to_get_after_401="",
 			url_to_post_after_401="",origin_url,message_timestamp,photo_path;
-	String local_server="http://192.168.1.11:5000/";
+	String local_server="";
 	//---AMAZON---//
 	CognitoCachingCredentialsProvider cognitoProvider;
 	TransferManager transferManagerUp,transferManagerDown;
@@ -798,6 +798,13 @@ public class Controller {
 						if (!json_phones_to_upload_after_login.isEmpty()) {
 							upload_contacts(json_phones_to_upload_after_login);
 						}
+						
+						if (!prefs.getString("facebook_id", "").isEmpty()) {
+							message_timestamp = Double.toString((double)System.currentTimeMillis()/1000);
+							editor = prefs.edit();
+							editor.putString("message_timestamp", message_timestamp);
+							editor.commit();
+						}
 
 						if (from.equals(FROM_LOGIN)) {
 							if (loader!=null) {
@@ -1023,44 +1030,82 @@ public class Controller {
 						break;
 					}
 					if (!message.isEmpty()&&!title.isEmpty()) {
-						new AlertDialog.Builder(mPicteverApp.getCurrentActivity())
-						.setTitle(title)
-						.setMessage(message)
-						.setNeutralButton("Ok!", new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog, int which) { 
-								if (popup_extra.equals("community")) {
+						if (popup_extra.equals("community")) {
+							AlertDialog dialog = new AlertDialog.Builder(mPicteverApp.getCurrentActivity())
+							.setTitle(title)
+							.setMessage(message)
+							.setPositiveButton("Ok!", new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog, int which) { 
 									Intent browserIntent = new Intent(Intent.ACTION_VIEW, 
 											Uri.parse("https://www.facebook.com/pictever"));
 									browserIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | 
 											Intent.FLAG_ACTIVITY_NEW_TASK);
 									context.startActivity(browserIntent);
+									dialog.dismiss();
 								}
-								if (popup_extra.equals("review")) {
-									final String appPackageName = context.getPackageName();
-									try {
-										Intent intent = new Intent(Intent.ACTION_VIEW, 
-												Uri.parse("market://details?id=" + appPackageName));
-										intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | 
-												Intent.FLAG_ACTIVITY_NEW_TASK);
-										context.startActivity(intent);
-									} catch (android.content.ActivityNotFoundException anfe) {
-										Intent intent = new Intent(Intent.ACTION_VIEW, 
-												Uri.parse("http://play.google.com/store/apps/details?id=" 
-														+ appPackageName));
-										intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | 
-												Intent.FLAG_ACTIVITY_NEW_TASK);
-										context.startActivity(intent);
+							})
+							.setNegativeButton("No thanks", new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog, int which) { 
+									dialog.dismiss();
+								}
+							})
+							.create();
+							dialog.getWindow().getAttributes().windowAnimations=R.style.dialog_animation;
+							dialog.show();
+						}
+						else {
+							if (popup_extra.equals("review")) {
+								new AlertDialog.Builder(mPicteverApp.getCurrentActivity())
+								.setTitle(title)
+								.setMessage(message)
+								.setPositiveButton("Ok!", new DialogInterface.OnClickListener() {
+									public void onClick(DialogInterface dialog, int which) { 
+										final String appPackageName = context.getPackageName();
+										try {
+											Intent intent = new Intent(Intent.ACTION_VIEW, 
+													Uri.parse("market://details?id=" + appPackageName));
+											intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | 
+													Intent.FLAG_ACTIVITY_NEW_TASK);
+											context.startActivity(intent);
+										} catch (android.content.ActivityNotFoundException anfe) {
+											Intent intent = new Intent(Intent.ACTION_VIEW, 
+													Uri.parse("http://play.google.com/store/apps/details?id=" 
+															+ appPackageName));
+											intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | 
+													Intent.FLAG_ACTIVITY_NEW_TASK);
+											context.startActivity(intent);
+										}
+										dialog.dismiss();
 									}
-								}
-								dialog.dismiss();
+								})
+								.setNegativeButton("No thanks", new DialogInterface.OnClickListener() {
+									public void onClick(DialogInterface dialog, int which) { 
+										dialog.dismiss();
+									}
+								})
+								.show();
 							}
-						})
-						.show();
+							else {
+								AlertDialog dialog = new AlertDialog.Builder(mPicteverApp.getCurrentActivity())
+								.setTitle(title)
+								.setMessage(message)
+								.setNeutralButton("Ok!", new DialogInterface.OnClickListener() {
+									public void onClick(DialogInterface dialog, int which) { 
+										dialog.dismiss();
+									}
+								})
+								.create();
+								dialog.getWindow().getAttributes().windowAnimations=R.style.dialog_animation;
+								dialog.show();
+							}
+						}
+
+
 						if (contacts_invited==3) {
 							if (prefs.getBoolean("show_unlock", true)) {
 								new AlertDialog.Builder(mPicteverApp.getCurrentActivity())
 								.setTitle("Awesome! You unlocked some future times!")
-								.setMessage("You can now send messages in 1 year and to a random day in the future!")
+								.setMessage("You can now send messages to a random day in the future!")
 								.setNeutralButton("Great!", new DialogInterface.OnClickListener() {
 									public void onClick(DialogInterface dialog, int which) { 
 										dialog.dismiss();

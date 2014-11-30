@@ -119,16 +119,6 @@ public class NewMessage extends PicteverActivity {
 		font = Typeface.createFromAsset(getAssets(), "gabriola.ttf");
 		txt.setTextSize(30);
 		txt.setTypeface(font);
-		TextView txt2 = (TextView) findViewById(R.id.filkeo_title);
-		txt2.setTextSize(30);
-		txt2.setTypeface(font,Typeface.BOLD);
-
-		txt2.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				onBackPressed();
-			}
-		});
 
 		((ImageButton) findViewById(R.id.button_settings)).setOnClickListener(new OnClickListener() {
 			@Override

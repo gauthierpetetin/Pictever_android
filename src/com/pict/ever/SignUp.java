@@ -59,10 +59,7 @@ public class SignUp extends Activity {
 					| View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
 		}
 		
-		TextView txt = (TextView) findViewById(R.id.filkeo_title);
 		font = Typeface.createFromAsset(getAssets(),"gabriola.ttf");
-		txt.setTextSize(32);
-		txt.setTypeface(font,Typeface.BOLD);
 		TextView txt2 = (TextView) findViewById(R.id.signup_title);
 		txt2.setTextSize(30);
 		txt2.setTypeface(font);
@@ -86,7 +83,7 @@ public class SignUp extends Activity {
 				controller.btn_signup.setEnabled(false);
 				String email = ((EditText) findViewById(R.id.edit_email_adress)).getText().toString();
 				String password = ((EditText) findViewById(R.id.edit_password)).getText().toString();
-				if (password.length() > 7) {
+				if (password.length() > 5) {
 					String hashpass="";
 					try {
 						hashpass = controller.computeHash(password);
@@ -107,8 +104,10 @@ public class SignUp extends Activity {
 					controller.signUp(email,hashpass);
 				}
 				else {
-					iolos.setText("The password should be 8 characters long");
+					iolos.setText("The password should be at least 6 characters long");
 					iolos.show();
+					controller.btn_signup.setAlpha(1);
+					controller.btn_signup.setEnabled(true);
 				}
 			}
 		});

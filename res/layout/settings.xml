@@ -41,18 +41,6 @@
             android:src="@drawable/back_arrow"
             android:visibility="visible" />
 
-        <TextView
-            android:id="@+id/tvShyft"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="30dp"
-            android:gravity="center_horizontal"
-            android:text="@string/app_name"
-            android:textColor="@color/WhiteSmoke"
-            android:textSize="32sp"
-            android:textStyle="bold" />
     </RelativeLayout>
 
     <LinearLayout

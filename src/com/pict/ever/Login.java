@@ -79,10 +79,7 @@ public class Login extends Activity {
 			Log.v(TAG, "No valid Google Play Services APK found.");
 		}
 
-		TextView txt = (TextView) findViewById(R.id.filkeo_title);
 		font = Typeface.createFromAsset(getAssets(), "gabriola.ttf");
-		txt.setTextSize(32);
-		txt.setTypeface(font,Typeface.BOLD);
 		TextView txt2 = (TextView) findViewById(R.id.login_title);
 		txt2.setTextSize(30);
 		txt2.setTypeface(font);

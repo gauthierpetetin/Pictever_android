@@ -30,7 +30,20 @@
         android:text="Pictever"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/White"
-        android:textSize="80sp" />
+        android:textSize="90sp" />
+    
+     <TextView
+        android:id="@+id/tvRemember"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvPicteverTitle"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal"
+        android:text="Remember those moments"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:visibility="invisible"
+        android:textColor="@color/White"
+        android:textSize="30sp" />
 
     <LinearLayout
         android:layout_width="match_parent"

@@ -10,7 +10,4 @@
         android:top="4dp"
         android:right="15dp"
         android:bottom="3dp"/>
-    <stroke
-        android:color="@color/WhiteSmoke"
-        android:width="2dp" />
 </shape>
