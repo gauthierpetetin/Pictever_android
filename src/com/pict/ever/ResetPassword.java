@@ -3,7 +3,6 @@ package com.pict.ever;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -14,11 +13,10 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 
-public class ResetPassword extends Activity {
+public class ResetPassword extends PicteverActivity {
 
 	static final String TAG = "ResetPassword";
 	Typeface font;
@@ -56,9 +54,6 @@ public class ResetPassword extends Activity {
 		}
 
 		font = Typeface.createFromAsset(getAssets(), "gabriola.ttf");
-		TextView txt2 = (TextView) findViewById(R.id.reset_title);
-		txt2.setTextSize(30);
-		txt2.setTypeface(font);
 
 		Button reset_button = (Button) findViewById(R.id.button_reset);
 		reset_button.setAlpha(1);
@@ -73,6 +68,7 @@ public class ResetPassword extends Activity {
 				String new_password = ((EditText) findViewById(R.id.edit_new_password)).getText().toString();
 				String confirm_new_password = ((EditText) findViewById(R.id.edit_confirm_new_password))
 						.getText().toString();
+				if (new_password.length() > 6) {
 				if (new_password.equals(confirm_new_password)) {
 					try {
 						user_password = controller.computeHash(new_password);
@@ -90,9 +86,11 @@ public class ResetPassword extends Activity {
 					controller.loader.setVisibility(View.VISIBLE);
 					controller.loader.animate();
 				}
-				else {
+				else
 					Toast.makeText(context, "The two passwords are different", Toast.LENGTH_LONG).show();
 				}
+				else
+					Toast.makeText(context, "The password should be 6 characters min", Toast.LENGTH_LONG).show();
 			}
 		});
 	}

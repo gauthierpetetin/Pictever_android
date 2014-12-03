@@ -135,9 +135,9 @@ public class Timeline extends PicteverActivity {
 			decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN 
 					| View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
 		}
-		
+
 		swipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
-	    swipeLayout.setOnRefreshListener(new OnRefreshListener() {
+		swipeLayout.setOnRefreshListener(new OnRefreshListener() {
 			@Override
 			public void onRefresh() {
 				if(controller.analytics != null) {
@@ -149,7 +149,21 @@ public class Timeline extends PicteverActivity {
 				controller.receive_all();
 			}
 		});
-	    swipeLayout.setColorSchemeResources(R.color.OrangeKeo,R.color.Red,R.color.Goldenrod,R.color.Orange);
+		
+		((ImageButton) findViewById(R.id.button_settings)).setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if(controller.analytics != null) {
+					AnalyticsEvent resendMessageEvent = controller.analytics.
+							getEventClient().createEvent("androidSettingsFromTimeline");
+					controller.analytics.getEventClient().recordEvent(resendMessageEvent);
+					controller.analytics.getEventClient().submitEvents();
+				}
+				startActivity(new Intent(Timeline.this,Settings.class));
+				Timeline.this.overridePendingTransition(R.animator.animation_enter_on_bottom2,R.animator.do_not_move);
+			}
+		});
+		swipeLayout.setColorSchemeResources(R.color.OrangeKeo,R.color.Red,R.color.Goldenrod,R.color.Orange);
 		controller.rl_title = (RelativeLayout) findViewById(R.id.rl_title);
 		TextView txt2 = (TextView) findViewById(R.id.tvWannaKnow);
 		TextView quick = (TextView) findViewById(R.id.quick);
@@ -158,9 +172,9 @@ public class Timeline extends PicteverActivity {
 		txt2.setTypeface(font,Typeface.NORMAL);
 		quick.setTextSize(24);
 		quick.setTypeface(font,Typeface.NORMAL);
-//		TextView timeline_title = (TextView) findViewById(R.id.timeline_title);
-//		timeline_title.setTextSize(30);
-//		timeline_title.setTypeface(font);
+		TextView timeline_title = (TextView) findViewById(R.id.timeline_title);
+		timeline_title.setTextSize(30);
+		timeline_title.setTypeface(font);
 		display();
 	}
 
@@ -218,7 +232,7 @@ public class Timeline extends PicteverActivity {
 				controller.ll_progress_params = new RelativeLayout.LayoutParams(
 						Math.round((float) controller.uploadProgression/100*
 								controller.prefs.getInt("SCREEN_HEIGHT",0)),
-						Math.round((float) controller.prefs.getInt("SCREEN_WIDTH", 500)/100));
+								Math.round((float) controller.prefs.getInt("SCREEN_WIDTH", 500)/100));
 				if (controller.rl_title!=null) {
 					controller.ll_progress_params.addRule(RelativeLayout.BELOW,controller.rl_title.getId());
 				}
@@ -233,11 +247,10 @@ public class Timeline extends PicteverActivity {
 				controller.ll_progress_params = new RelativeLayout.LayoutParams(
 						Math.round((float) controller.uploadProgression/100*
 								controller.prefs.getInt("SCREEN_HEIGHT",0)),
-						Math.round((float) controller.prefs.getInt("SCREEN_WIDTH", 500)/100));
+								Math.round((float) controller.prefs.getInt("SCREEN_WIDTH", 500)/100));
 				if (controller.rl_title!=null)
 					controller.ll_progress_params.addRule(RelativeLayout.BELOW,controller.rl_title.getId());
 				controller.ll_progress.setLayoutParams(controller.ll_progress_params);
-
 			}
 			else
 				controller.ll_progress.setVisibility(View.INVISIBLE);
@@ -273,7 +286,7 @@ public class Timeline extends PicteverActivity {
 			}
 		});
 	}
-	
+
 	@Override
 	public void onContentChanged() {
 		Log.v(TAG,"oncontentchanged");
@@ -283,19 +296,6 @@ public class Timeline extends PicteverActivity {
 
 	public void display() {
 		k=0;
-//		((ImageButton) findViewById(R.id.button_settings)).setOnClickListener(new OnClickListener() {
-//			@Override
-//			public void onClick(View v) {
-//				if(controller.analytics != null) {
-//					AnalyticsEvent resendMessageEvent = controller.analytics.
-//							getEventClient().createEvent("androidSettingsFromTimeline");
-//					controller.analytics.getEventClient().recordEvent(resendMessageEvent);
-//					controller.analytics.getEventClient().submitEvents();
-//				}
-//				startActivity(new Intent(Timeline.this,Settings.class));
-//				Timeline.this.overridePendingTransition(R.animator.animation_enter_on_bottom2,R.animator.do_not_move);
-//			}
-//		});
 		llFilMessage = (LinearLayout) findViewById(R.id.llFilMessage);
 		llFilMessage.removeAllViewsInLayout();
 
@@ -308,13 +308,34 @@ public class Timeline extends PicteverActivity {
 				tvMessage.setVisibility(View.INVISIBLE);
 			}
 		});
+		scrollview = (ScrollViewExt) findViewById(R.id.scrollFilMessage);
+		scrollview.setScrollViewListener(new ScrollViewListener() {
+			@Override
+			public void onScrollChanged(ScrollViewExt scrollView, int x, int y,
+					int oldx, int oldy) {
+				Log.v(TAG,"y="+y);
+				if (y<10){
+					if (((RelativeLayout) findViewById(R.id.rl_title)).getVisibility()==View.INVISIBLE) {
+						((RelativeLayout) findViewById(R.id.rl_title)).setVisibility(View.VISIBLE);
+						((RelativeLayout) findViewById(R.id.rl_title)).bringToFront();
+					}
+				}
+				else {
+					if (((RelativeLayout) findViewById(R.id.rl_title)).getVisibility()==View.VISIBLE) {
+						Animation anim = AnimationUtils.loadAnimation(context,R.animator.animation_leave_on_top);
+						((RelativeLayout) findViewById(R.id.rl_title)).startAnimation(anim);
+					}
+					((RelativeLayout) findViewById(R.id.rl_title)).setVisibility(View.INVISIBLE);
+				}
+			}
+		});
 
 		if (controller.listMessages==null) {
 			Set<String> setMessages = controller.prefs.getStringSet("set_messages", new HashSet<String>());
 			controller.listMessages = new ArrayList<String>(setMessages);
 		}
 		controller.sortMessages(controller.listMessages);
-		if (controller.listMessages.size() > 1) 
+		if (controller.listMessages.size() > 0) 
 			((RelativeLayout) findViewById(R.id.rlPandaBottom)).setVisibility(View.VISIBLE);
 		else 
 			((RelativeLayout) findViewById(R.id.rlPandaBottom)).setVisibility(View.GONE);
@@ -395,19 +416,19 @@ public class Timeline extends PicteverActivity {
 			tvContactName.setTypeface(Typeface.DEFAULT,Typeface.BOLD);
 			rl_header.addView(tvContactName,contact_name_params);
 
-//			// DATE OF RECEPTION
-//			TextView tvReceivedDate = new TextView(this);
-//			RelativeLayout.LayoutParams received_date_params = new RelativeLayout.LayoutParams(
-//					RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
-//			received_date_params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT,RelativeLayout.TRUE);
-//			received_date_params.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE);
-//			received_date_params.setMargins(0, 0, 5, 0);
-//			tvReceivedDate.setText(received_date[i]);
-//			tvReceivedDate.setTextAppearance(this, android.R.style.TextAppearance_Small);
-//			tvReceivedDate.setTextColor(getResources().getColor(R.color.black_overlay));
-//			tvReceivedDate.setTypeface(Typeface.DEFAULT);
-//			rl_header.addView(tvReceivedDate ,received_date_params);
-			
+			//			// DATE OF RECEPTION
+			//			TextView tvReceivedDate = new TextView(this);
+			//			RelativeLayout.LayoutParams received_date_params = new RelativeLayout.LayoutParams(
+			//					RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
+			//			received_date_params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT,RelativeLayout.TRUE);
+			//			received_date_params.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE);
+			//			received_date_params.setMargins(0, 0, 5, 0);
+			//			tvReceivedDate.setText(received_date[i]);
+			//			tvReceivedDate.setTextAppearance(this, android.R.style.TextAppearance_Small);
+			//			tvReceivedDate.setTextColor(getResources().getColor(R.color.black_overlay));
+			//			tvReceivedDate.setTypeface(Typeface.DEFAULT);
+			//			rl_header.addView(tvReceivedDate ,received_date_params);
+
 			TextView tvSendChoice = new TextView(this);
 			RelativeLayout.LayoutParams tvSendChoice_params = new RelativeLayout.LayoutParams(
 					RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -624,19 +645,19 @@ public class Timeline extends PicteverActivity {
 				rl_picture.addView(tvMessage,0,tvMessage_params);
 			}
 
-//			TextView tvSendChoice = new TextView(this);
-//			RelativeLayout.LayoutParams tvSendChoice_params = new RelativeLayout.LayoutParams(
-//					RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
-//			tvSendChoice_params.addRule(RelativeLayout.ALIGN_PARENT_LEFT, RelativeLayout.TRUE);
-//			tvSendChoice_params.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
-//			tvSendChoice.setText(receive_label[i]);
-//			tvSendChoice.setTypeface(font,Typeface.BOLD);
-//			tvSendChoice.setPadding(20, -2, 20, -2);
-//			tvSendChoice.setTextSize(25);
-//			tvSendChoice.setId(k+5);
-//			tvSendChoice.setBackgroundColor(controller.which_color(receive_color[i]));
-//			tvSendChoice.setTextColor(getResources().getColor(R.color.White));
-//			rl_picture.addView(tvSendChoice,tvSendChoice_params);
+			//			TextView tvSendChoice = new TextView(this);
+			//			RelativeLayout.LayoutParams tvSendChoice_params = new RelativeLayout.LayoutParams(
+			//					RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
+			//			tvSendChoice_params.addRule(RelativeLayout.ALIGN_PARENT_LEFT, RelativeLayout.TRUE);
+			//			tvSendChoice_params.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
+			//			tvSendChoice.setText(receive_label[i]);
+			//			tvSendChoice.setTypeface(font,Typeface.BOLD);
+			//			tvSendChoice.setPadding(20, -2, 20, -2);
+			//			tvSendChoice.setTextSize(25);
+			//			tvSendChoice.setId(k+5);
+			//			tvSendChoice.setBackgroundColor(controller.which_color(receive_color[i]));
+			//			tvSendChoice.setTextColor(getResources().getColor(R.color.White));
+			//			rl_picture.addView(tvSendChoice,tvSendChoice_params);
 
 			LinearLayout ll_bottom = new LinearLayout(this);
 			RelativeLayout.LayoutParams ll_bottom_params = new RelativeLayout.LayoutParams(

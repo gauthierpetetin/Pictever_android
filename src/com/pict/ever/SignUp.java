@@ -4,7 +4,6 @@ import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -19,7 +18,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 
-public class SignUp extends Activity {
+public class SignUp extends PicteverActivity {
 
 	Controller controller;
 	Toast iolos;

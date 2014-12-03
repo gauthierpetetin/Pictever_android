@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -27,7 +26,7 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 
-public class Login extends Activity {
+public class Login extends PicteverActivity {
 
 	public static final String EXTRA_MESSAGE = "message";
 	private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
@@ -93,18 +92,25 @@ public class Login extends Activity {
 				imm.showSoftInput(((EditText) findViewById(R.id.edit_email_adress)), 0);
 			}
 		}, 100);
-		
+
 		((TextView) findViewById(R.id.reset_password)).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Log.v(TAG,"reset");
-				((TextView) findViewById(R.id.reset_password)).setAlpha((float)0.3);
-				String email = controller.prefs.getString("user_email", 
-						((EditText) findViewById(R.id.edit_email_adress)).getText().toString());
-				if (!email.isEmpty()) 
-					controller.send_reset_mail(email);
-				else
-					Toast.makeText(context,"Please enter the email of your account",Toast.LENGTH_SHORT).show();
+				String email = ((EditText) findViewById(R.id.edit_email_adress)).getText().toString();
+				if (!email.isEmpty() && email.contains("@")) {
+					email = email.replace(" ","");
+					controller.editor = controller.prefs.edit();
+					controller.editor.putString("user_email", email);
+					controller.editor.commit();
+					Log.v(TAG,"reset");
+					((TextView) findViewById(R.id.reset_password)).setAlpha((float)0.3);
+				}
+				if (!controller.prefs.getString("user_email", "").isEmpty())
+					controller.send_reset_mail(controller.prefs.getString("user_email", ""));
+				else {
+					Toast.makeText(context,"Please enter a valid email adress",Toast.LENGTH_SHORT).show();
+					((TextView) findViewById(R.id.reset_password)).setAlpha(1);
+				}
 			}
 		});
 

@@ -105,7 +105,7 @@ public class Controller {
 	List<NameValuePair> nVP;
 	String update_link="",url_to_get_after_401="",
 			url_to_post_after_401="",origin_url,message_timestamp,photo_path;
-	String local_server="http://192.168.1.10:5000/";
+	String local_server="";
 	//---AMAZON---//
 	CognitoCachingCredentialsProvider cognitoProvider;
 	TransferManager transferManagerUp,transferManagerDown;
@@ -798,7 +798,7 @@ public class Controller {
 						if (!json_phones_to_upload_after_login.isEmpty()) {
 							upload_contacts(json_phones_to_upload_after_login);
 						}
-						
+
 						if (!prefs.getString("facebook_id", "").isEmpty()) {
 							message_timestamp = Double.toString((double)System.currentTimeMillis()/1000);
 							editor = prefs.edit();
@@ -1158,10 +1158,24 @@ public class Controller {
 				Toast.makeText(context,"Server Error. Please report to Pictever Team",Toast.LENGTH_SHORT).show();
 			}
 
-			if (err_code.equals("200") && url_code.startsWith("send_reset_mail")) {
-				Intent intent = new Intent(context,ResetPassword.class);
-				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-				context.startActivity(intent);
+			if (url_code.startsWith("send_reset_mail")) {
+				if (err_code.equals("200")) {
+					Intent intent = new Intent(context,ResetPassword.class);
+					intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+					context.startActivity(intent);
+				}
+				if (err_code.equals("406")) {
+					iolos.setText("Sorry this email doesn't correspond to an account");
+					iolos.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
+					iolos.show();
+					PicteverApp mPicteverApp = (PicteverApp) context.getApplicationContext();
+					if (mPicteverApp!=null && mPicteverApp.getCurrentActivity()!=null){
+						if (((TextView) mPicteverApp.getCurrentActivity().
+								findViewById(R.id.reset_password))!=null)
+							((TextView) mPicteverApp.getCurrentActivity().
+									findViewById(R.id.reset_password)).setAlpha(1);
+					}
+				}
 			}
 
 			if (err_code.equals("200") && url_code.startsWith("get_my_status")) {
@@ -1319,7 +1333,7 @@ public class Controller {
 					}
 					@Override
 					protected void onPostExecute (String result) {
-//						get_my_status();
+						//						get_my_status();
 					}
 				}.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,response);
 			}
@@ -2184,7 +2198,7 @@ public class Controller {
 															null, null);
 											editor.commit();
 										}
-										
+
 									}
 								}
 								upload = null;

@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.Locale;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
@@ -31,7 +30,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
-public class SetPhoneNumber extends Activity {
+public class SetPhoneNumber extends PicteverActivity {
 
 	Controller controller;
 	String user_phone = "";;
