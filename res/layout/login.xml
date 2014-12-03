@@ -1,78 +1,84 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/shyft_background2"
-    android:fitsSystemWindows="true"
-    android:orientation="vertical" >
+    android:fitsSystemWindows="true" >
 
-    <RelativeLayout
-        android:id="@+id/rl_title"
+    <ImageView
+        android:id="@+id/imageView1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/DarkCyan" >
-
-        <TextView
-            android:id="@+id/login_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:text="Log in"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="@color/WhiteSmoke" />
-    </RelativeLayout>
+        android:layout_height="match_parent"
+        android:adjustViewBounds="true"
+        android:baselineAlignBottom="false"
+        android:clickable="true"
+        android:cropToPadding="false"
+        android:duplicateParentState="false"
+        android:fitsSystemWindows="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:longClickable="false"
+        android:scaleType="centerCrop"
+        android:scrollbarAlwaysDrawVerticalTrack="false"
+        android:src="@drawable/trek705x1184" />
 
     <EditText
         android:id="@+id/edit_email_adress"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="30dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="25dp"
+        android:background="@drawable/edit_email_signup"
         android:hint="Your preferred email address"
-        android:inputType="textEmailAddress" />
+        android:inputType="textEmailAddress"
+        android:paddingBottom="10dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="10dp" />
 
     <EditText
         android:id="@+id/edit_password"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="15dp"
-        android:hint="Your password"
-        android:inputType="textPassword" />
+        android:layout_below="@+id/edit_email_adress"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/edit_email_signup"
+        android:hint="Your password (6 min)"
+        android:inputType="textPassword"
+        android:paddingBottom="10dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="10dp" />
+
+    <TextView
+        android:id="@+id/reset_password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/edit_password"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:text="Forgot your password ? Reset it here."
+        android:textSize="13sp"
+        android:textColor="@color/OrangeKeo" />
 
     <RelativeLayout
         android:id="@+id/rl_button_login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/reset_password"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="15dp" >
+        android:layout_marginTop="25dp" >
 
         <Button
             android:id="@+id/button_login"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:background="@color/DarkCyan"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:text="Let's go!"
+            android:background="@drawable/startbutton"
+            android:paddingLeft="13dp"
+            android:paddingRight="13dp"
+            android:text="Let&apos;s go!"
             android:textColor="@color/White" />
-
-        <TextView
-            android:id="@+id/reset_password"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:layout_toRightOf="@+id/button_login"
-            android:text="reset my password"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textColor="@color/OrangeKeo"
-            android:visibility="visible" />
 
         <ProgressBar
             android:id="@+id/progress_bar_loading"
@@ -82,4 +88,4 @@
             android:visibility="invisible" />
     </RelativeLayout>
 
-</LinearLayout>
+</RelativeLayout>

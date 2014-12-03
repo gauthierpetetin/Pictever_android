@@ -17,7 +17,6 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.Request;
@@ -82,64 +81,6 @@ public class WelcomeActivity extends PicteverActivity {
 	public void onResume() {
 		super.onResume();
 		uiHelper.onResume();
-	}
-
-	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
-		uiHelper.onActivityResult(requestCode, resultCode, data);
-	}
-
-
-	@Override
-	public void onPause() {
-		super.onPause();
-		uiHelper.onPause();
-	}
-
-	@Override
-	public void onDestroy() {
-		super.onDestroy();
-		uiHelper.onDestroy();
-	}
-
-	@Override
-	public void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-		uiHelper.onSaveInstanceState(outState);
-	}
-
-
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.welcome_full_screen);
-
-		controller = ((PicteverApp) getApplication()).getController();
-		controller.current_activity = getClass().getSimpleName();
-		controller.api = android.os.Build.VERSION.SDK_INT;
-		uiHelper = new UiLifecycleHelper(WelcomeActivity.this, callback);
-		uiHelper.onCreate(savedInstanceState);
-
-		Display display = getWindowManager().getDefaultDisplay();
-		Point size = new Point();
-		display.getSize(size);
-		Log.v(TAG, "Screen size = " + Integer.toString(size.x)+ " x " + Integer.toString(size.y));
-		controller.editor = controller.prefs.edit();
-		controller.editor.putInt("api_level",controller.api);
-		controller.editor.putInt("SCREEN_WIDTH", size.y);
-		controller.editor.putInt("SCREEN_HEIGHT",size.x);
-		controller.SCREEN_WIDTH = size.y;
-		controller.SCREEN_HEIGHT = size.x;
-		controller.editor.commit();
-		font1 = Typeface.createFromAsset(getAssets(), "robotomedium.ttf");
-		Typeface font2 = Typeface.createFromAsset(getAssets(), "gabriola.ttf");
-		TextView tvPicteverTitle = (TextView) findViewById(R.id.tvPicteverTitle);
-		tvPicteverTitle.setTypeface(font2,Typeface.NORMAL);
-		TextView tvRemember = (TextView) findViewById(R.id.tvRemember);
-		tvRemember.setTypeface(font2,Typeface.NORMAL);
-		camera_sizes();
-		
 		if (!controller.prefs.getString("facebook_id", "").isEmpty()) {
 			((LoginButton) findViewById(R.id.authButton)).setVisibility(View.INVISIBLE);
 			((Button) findViewById(R.id.button_welcome_sign_up)).setVisibility(View.INVISIBLE);
@@ -196,6 +137,64 @@ public class WelcomeActivity extends PicteverActivity {
 						R.animator.animation_leave_on_left);
 			}
 		});
+	}
+
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		uiHelper.onActivityResult(requestCode, resultCode, data);
+	}
+
+
+	@Override
+	public void onPause() {
+		super.onPause();
+		uiHelper.onPause();
+	}
+
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		uiHelper.onDestroy();
+	}
+
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		uiHelper.onSaveInstanceState(outState);
+	}
+
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.welcome_full_screen);
+
+		controller = ((PicteverApp) getApplication()).getController();
+		controller.current_activity = getClass().getSimpleName();
+		controller.api = android.os.Build.VERSION.SDK_INT;
+		uiHelper = new UiLifecycleHelper(WelcomeActivity.this, callback);
+		uiHelper.onCreate(savedInstanceState);
+
+		Display display = getWindowManager().getDefaultDisplay();
+		Point size = new Point();
+		display.getSize(size);
+		Log.v(TAG, "Screen size = " + Integer.toString(size.x)+ " x " + Integer.toString(size.y));
+		controller.editor = controller.prefs.edit();
+		controller.editor.putInt("api_level",controller.api);
+		controller.editor.putInt("SCREEN_WIDTH", size.y);
+		controller.editor.putInt("SCREEN_HEIGHT",size.x);
+		controller.SCREEN_WIDTH = size.y;
+		controller.SCREEN_HEIGHT = size.x;
+		controller.editor.commit();
+		font1 = Typeface.createFromAsset(getAssets(), "robotomedium.ttf");
+		camera_sizes();
+		
+		Session session = Session.getActiveSession();
+		if (session!=null && session.getState().isOpened()){
+			Log.v(TAG,"onCreate session opened");
+			Request.newMeRequest(session,new meCallback()).executeAsync();
+		}
 	}
 
 	public void camera_sizes() {

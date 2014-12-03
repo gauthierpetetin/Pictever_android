@@ -25,7 +25,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -69,9 +68,9 @@ public class SetPhoneNumber extends Activity {
 		}
 
 		font = Typeface.createFromAsset(getAssets(), "gabriola.ttf");
-		TextView txt2 = (TextView) findViewById(R.id.phone_number_title);
-		txt2.setTextSize(30);
-		txt2.setTypeface(font);
+//		TextView txt2 = (TextView) findViewById(R.id.phone_number_title);
+//		txt2.setTextSize(30);
+//		txt2.setTypeface(font);
 
 		edit_phone = (EditText) findViewById(R.id.edit_phone_number);
 
@@ -187,10 +186,11 @@ public class SetPhoneNumber extends Activity {
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
 				if (s.toString().length() < 5) {
-					controller.btn_verify.setAlpha((float) 0.8);
+					controller.btn_verify.setAlpha((float) 0.4);
 					controller.btn_verify.setEnabled(false);
 				}
 				else {
+					controller.btn_verify.setVisibility(View.VISIBLE);
 					controller.btn_verify.setAlpha((float) 1);
 					controller.btn_verify.setEnabled(true);
 				}
@@ -218,11 +218,11 @@ public class SetPhoneNumber extends Activity {
 		} else {
 			Log.i(TAG,"No valid Google Play Services APK found.");
 		}
-
+		
 		controller.btn_verify = (Button) findViewById(R.id.button_verify);
-		controller.btn_verify.setTextSize(28);
+		controller.btn_verify.setTextSize(25);
 		controller.btn_verify.setTypeface(font);
-		controller.btn_verify.setAlpha((float)0.6);
+		controller.btn_verify.setAlpha((float)0.4);
 		controller.btn_verify.setEnabled(false);
 		controller.btn_verify.setOnClickListener(new View.OnClickListener() {
 			@Override

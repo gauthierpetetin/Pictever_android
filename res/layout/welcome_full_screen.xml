@@ -18,32 +18,7 @@
         android:longClickable="false"
         android:scaleType="centerCrop"
         android:scrollbarAlwaysDrawVerticalTrack="false"
-        android:src="@drawable/testcrop" />
-
-    <TextView
-        android:id="@+id/tvPicteverTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="35dp"
-        android:text="Pictever"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="@color/White"
-        android:textSize="90sp" />
-    
-     <TextView
-        android:id="@+id/tvRemember"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tvPicteverTitle"
-        android:layout_centerHorizontal="true"
-        android:gravity="center_horizontal"
-        android:text="Remember those moments"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:visibility="invisible"
-        android:textColor="@color/White"
-        android:textSize="30sp" />
+        android:src="@drawable/trek705x1184text" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -66,12 +41,17 @@
             android:id="@+id/button_welcome_sign_up"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/Gray"
-            android:padding="5dp"
-            android:text="Register with email"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="10dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:textColor="@color/White"
+            android:background="@drawable/registerbutton"
+            android:paddingBottom="10dp"
+            android:paddingLeft="25dp"
+            android:paddingRight="25dp"
+            android:paddingTop="10dp"
+            android:text="Register with email"
+            android:textColor="@color/WhiteSmoke"
             android:textColorHint="@color/White"
             android:textSize="17sp"
             android:visibility="visible" />
@@ -80,15 +60,16 @@
             android:id="@+id/button_welcome_login"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:layout_marginBottom="20dp"
-            android:padding="5dp"
-            android:background="@color/black_overlay"
+            android:background="@color/Transparent"
+            android:padding="8dp"
             android:text="Log In"
-            android:textColor="@color/White"
+            android:textColor="@color/WhiteSmoke"
             android:textColorHint="@color/White"
             android:textSize="17sp" />
+
     </LinearLayout>
 
 </RelativeLayout>

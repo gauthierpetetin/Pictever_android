@@ -3,8 +3,6 @@ package com.pict.ever;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 
-import com.pict.ever.R;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -18,7 +16,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -60,9 +57,6 @@ public class SignUp extends Activity {
 		}
 		
 		font = Typeface.createFromAsset(getAssets(),"gabriola.ttf");
-		TextView txt2 = (TextView) findViewById(R.id.signup_title);
-		txt2.setTextSize(30);
-		txt2.setTypeface(font);
 		
 		((EditText) findViewById(R.id.edit_email_adress)).postDelayed(new Runnable() {
 			@Override
@@ -74,7 +68,7 @@ public class SignUp extends Activity {
 		}, 100);
 
 		controller.btn_signup = (Button) findViewById(R.id.button_sign_up);
-		controller.btn_signup.setTextSize(28);
+		controller.btn_signup.setTextSize(26);
 		controller.btn_signup.setTypeface(font);
 		controller.btn_signup.setOnClickListener(new View.OnClickListener() {
 			@Override

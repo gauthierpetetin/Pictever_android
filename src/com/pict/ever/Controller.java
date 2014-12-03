@@ -105,7 +105,7 @@ public class Controller {
 	List<NameValuePair> nVP;
 	String update_link="",url_to_get_after_401="",
 			url_to_post_after_401="",origin_url,message_timestamp,photo_path;
-	String local_server="";
+	String local_server="http://192.168.1.10:5000/";
 	//---AMAZON---//
 	CognitoCachingCredentialsProvider cognitoProvider;
 	TransferManager transferManagerUp,transferManagerDown;
@@ -1319,7 +1319,7 @@ public class Controller {
 					}
 					@Override
 					protected void onPostExecute (String result) {
-						get_my_status();
+//						get_my_status();
 					}
 				}.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,response);
 			}
@@ -2182,8 +2182,9 @@ public class Controller {
 															"To get the app and see it: " +
 															"http://pictever.com",
 															null, null);
+											editor.commit();
 										}
-										editor.commit();
+										
 									}
 								}
 								upload = null;

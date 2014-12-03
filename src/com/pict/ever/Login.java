@@ -80,9 +80,6 @@ public class Login extends Activity {
 		}
 
 		font = Typeface.createFromAsset(getAssets(), "gabriola.ttf");
-		TextView txt2 = (TextView) findViewById(R.id.login_title);
-		txt2.setTextSize(30);
-		txt2.setTypeface(font);
 
 		if (!controller.prefs.getString("user_email", "").isEmpty())
 			((EditText) findViewById(R.id.edit_email_adress)).
@@ -113,7 +110,7 @@ public class Login extends Activity {
 
 		controller.btn_login = (Button) findViewById(R.id.button_login);
 		controller.btn_login.setAlpha(1);
-		controller.btn_login.setTextSize(28);
+		controller.btn_login.setTextSize(26);
 		controller.btn_login.setTypeface(font);
 		controller.btn_login.setOnClickListener(new View.OnClickListener() {
 			@Override

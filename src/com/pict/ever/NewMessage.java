@@ -296,7 +296,9 @@ public class NewMessage extends PicteverActivity {
 													times_contacted +1);
 											Log.v(TAG,id_selected + "_times_contacted : "
 													+ controller.prefs.getInt(id_selected+ "_times_contacted", 0));
+											controller.editor.commit();
 											if (id_selected.startsWith("num")){
+												controller.editor = controller.prefs.edit();
 												int contacts_invited = controller.prefs.getInt("contacts_invited", 0);
 												controller.editor.putInt("contacts_invited", contacts_invited+1);
 												SmsManager smsManager = SmsManager.getDefault();
@@ -304,8 +306,9 @@ public class NewMessage extends PicteverActivity {
 														"I just sent you a message in the future on Pictever!" +
 																" To get the app and see the message: http://pictever.com"
 																, null, null);
+												controller.editor.commit();
 											}
-											controller.editor.commit();
+											
 										}
 										finish();
 									}
@@ -431,15 +434,18 @@ public class NewMessage extends PicteverActivity {
 										controller.editor.putInt(id_selected+"_times_contacted", times_contacted +1);
 										Log.v(TAG,id_selected + "_times_contacted : " + controller.prefs.getInt(
 												id_selected+ "_times_contacted", 0));
+										controller.editor.commit();
 										if (id_selected.startsWith("num")){
+											controller.editor = controller.prefs.edit();
 											int contacts_invited = controller.prefs.getInt("contacts_invited", 0);
 											controller.editor.putInt("contacts_invited", contacts_invited+1);
 											SmsManager smsManager = SmsManager.getDefault();
-											smsManager.sendTextMessage(id_selected.substring(3), null,
+											smsManager.sendTextMessage(id_selected.substring(3), null, 
 													"I just sent you a message in the future on Pictever!" +
-															" To get the app and see the message : http://pictever.com", null, null);
+															" To get the app and see the message: http://pictever.com"
+															, null, null);
+											controller.editor.commit();
 										}
-										controller.editor.commit();
 									}
 									rl_popup.setVisibility(View.INVISIBLE);
 									button_send_future.setVisibility(View.INVISIBLE);

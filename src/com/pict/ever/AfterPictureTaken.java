@@ -287,7 +287,7 @@ public class AfterPictureTaken extends PicteverActivity {
 												main_view.setDrawingCacheEnabled(false);
 												Log.v(TAG,"bitmap created");
 												int size = bmp.getWidth()*bmp.getHeight() ;
-												int limit_size = 500000;
+												int limit_size = 700000;
 												if (size>limit_size) {
 													int bmp_width = bmp.getWidth();
 													int bmp_height = bmp.getHeight();
@@ -462,7 +462,7 @@ public class AfterPictureTaken extends PicteverActivity {
 												main_view.setDrawingCacheEnabled(false);
 												Log.v(TAG,"bitmap created");
 												int size = bmp.getWidth()*bmp.getHeight() ;
-												int limit_size = 500000;
+												int limit_size = 700000;
 												if (size>limit_size) {
 													int bmp_width = bmp.getWidth();
 													int bmp_height = bmp.getHeight();
